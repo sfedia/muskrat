@@ -74,6 +74,17 @@ class ObjectProperties:
         elif key in self.bool_like:
             del self.bool_like[key]
 
+    def dict_properties(self, bl_equivalent):
+        """
+        Return properties as a single dict-type object
+        :param bl_equivalent: value to pass in k,v pair for bool-like properties
+        :return: dict-type object
+        """
+        result = self.both_side
+        for (k, v) in self.bool_like.items():
+            result[k] = bl_equivalent
+        return result
+
 
 class UsingMethods:
     def __init__(self):
