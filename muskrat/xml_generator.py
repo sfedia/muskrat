@@ -25,5 +25,5 @@ class XMLQuery:
                 "type": obj.object_type,
                 "content": obj.content
             },
-            **obj.properties.dict_properties(None)
+            **obj.properties.dict_properties(".")
         )
