@@ -20,7 +20,7 @@ class ParsingObject:
         self.connected_objects = []
         self.using_methods = using_methods
         self.content = content
-        self.properties = {}
+        self.properties = ObjectProperties()
         self.object_type = object_type
 
     def connect(self, object2connect):
@@ -43,10 +43,6 @@ class ParsingObject:
         self.content += content2insert
         if update_function is not None:
             self.content = update_function(self.content)
-
-    def add_properties(self, **kwargs):
-        for (prop, value) in kwargs.items():
-            self.properties[prop] = value
 
 
 class ObjectProperties:
