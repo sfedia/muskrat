@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import lxml.etree
+from lxml import etree
 
 
 class XMLQuery:
@@ -38,6 +38,9 @@ class XMLQuery:
                 parameters.append(k)
 
         return "<object %s>" % " ".join(parameters)
+
+    def tree(self):
+        return etree.XML(self.xml_string)
 
 
 class XMLElement:
