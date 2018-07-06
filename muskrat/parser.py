@@ -2,17 +2,17 @@
 
 class Parser:
     def __init__(self):
-        self.independent_objects = []
+        self.objects = []
 
     def get(self, behind=1, condition=lambda x: True):
-        for obj in reversed(self.independent_objects):
+        for obj in reversed(self.objects):
             fc, behind = obj.dive(behind, condition)
             if fc is not None:
                 return fc
         return None
 
     def append(self, obj):
-        self.independent_objects.append(obj)
+        self.objects.append(obj)
 
 
 class ParsingObject:
