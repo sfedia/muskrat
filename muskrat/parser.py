@@ -49,6 +49,36 @@ class ParsingObject:
             self.properties[prop] = value
 
 
+class ObjectProperties:
+    def __init__(self):
+        self.both_side = {}
+        self.bool_like = {}
+
+    def add_property(self, key, value=None):
+        if value is None:
+            self.bool_like[key] = None
+        else:
+            self.both_side[key] = value
+
+    def get_property(self, key):
+        if key in self.both_side:
+            return self.both_side[key]
+        elif key in self.bool_like:
+            return self.bool_like[key]
+
+    def set_property(self, key, value):
+        if key in self.both_side:
+            self.both_side[key] = value
+        else:
+            raise ValueError
+
+    def remove_property(self, key):
+        if key in self.both_side:
+            del self.both_side[key]
+        elif key in self.bool_like:
+            del self.bool_like[key]
+
+
 class UsingMethods:
     def __init__(self):
         self.__methods = {}
