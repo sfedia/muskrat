@@ -21,6 +21,20 @@ class XMLQuery:
         return obj_tag.build()
 
     @staticmethod
+    def xml_escape(markup):
+        escape = {
+            '"': '&quot;',
+            "'": '&apos;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '&': '&amp;',
+            '\n': '&#10;'
+        }
+        for (fm, to) in escape.items():
+            markup = markup.replace(fm, to)
+        return markup
+
+    @staticmethod
     def get_parameters(obj):
         return dict(
             {
