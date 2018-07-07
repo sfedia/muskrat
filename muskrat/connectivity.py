@@ -4,7 +4,7 @@ from .filters import unify
 from collections import namedtuple
 
 
-class Accept:
+class RelativePolicy:
     def __init__(self):
         self.__options = {}
         self.__default = None
@@ -23,6 +23,18 @@ class Accept:
         if self.__default is None:
             raise MissingDefault()
         return allowed_opts(self.__default['connect'], self.__default['insert'])
+
+
+class Accept(RelativePolicy):
+    def __init__(self):
+        RelativePolicy.__init__(self)
+        pass
+
+
+class Attach(RelativePolicy):
+    def __init__(self):
+        RelativePolicy.__init__(self)
+        pass
 
 
 class MissingDefault(EnvironmentError):
