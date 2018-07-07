@@ -3,6 +3,28 @@
 from .defaults import max_connection_depth
 
 
+class Assemble:
+    class OR:
+        def __init__(self, *args):
+            self.filters = args
+
+        def process(self, obj):
+            for flt in self.filters:
+                if flt(obj):
+                    return True
+            return False
+    
+    class AND:
+        def __init__(self, *args):
+            self.filters = args
+
+        def process(self, obj):
+            for flt in self.filters:
+                if not flt(obj):
+                    return False
+            return True
+
+
 def by_type(object_type):
     return lambda obj: obj.object_type == object_type
 
@@ -33,7 +55,3 @@ def connection_depth(value=None, compare=None):
         else:
             return compare(depth)
     return get_depth
-
-
-
-
