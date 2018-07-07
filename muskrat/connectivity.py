@@ -3,6 +3,8 @@
 from .filters import unify
 from collections import namedtuple
 
+allowed_opts = namedtuple('AllowedOptions', 'connect insert')
+
 
 class RelativePolicy:
     def __init__(self):
@@ -16,7 +18,6 @@ class RelativePolicy:
         self.__default = dict(connect=connect, insert=insert)
 
     def get_policy(self, obj):
-        allowed_opts = namedtuple('AllowedOptions', 'connect insert')
         for (flt, options) in self.__options.items():
             if unify(flt)(obj):
                 return allowed_opts(options['connect'], options['insert'])
@@ -35,6 +36,12 @@ class Attach(RelativePolicy):
     def __init__(self):
         RelativePolicy.__init__(self)
         pass
+
+
+def merge_policies(*args):
+    connect = False not in [x.connect for x in args]
+    insert = False not in [x.insert for x in args]
+    return allowed_opts(connect, insert)
 
 
 class MissingDefault(EnvironmentError):
