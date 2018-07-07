@@ -81,7 +81,7 @@ class ObjectProperties:
         :return: dict-type object
         """
         result = self.both_side
-        for (k, v) in self.bool_like.items():
+        for k in self.bool_like:
             result[k] = bl_equivalent
         return result
 
