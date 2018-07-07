@@ -21,7 +21,7 @@ class Assemble:
 
         def process(self, obj):
             for flt in self.filters:
-                if isinstance(flt, Assemble) and not flt.process() or not flt(obj):
+                if issubclass(flt, Assemble) and not flt.process() or not flt(obj):
                     return False
             return True
 
