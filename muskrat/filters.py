@@ -3,7 +3,7 @@
 from .defaults import max_connection_depth
 
 
-class Assemble:
+class Logic:
 
     class OR:
         def __init__(self, *args):
@@ -11,7 +11,7 @@ class Assemble:
 
         def process(self, obj):
             for flt in self.filters:
-                if issubclass(flt, Assemble) and flt.process() or flt(obj):
+                if issubclass(flt, Logic) and flt.process() or flt(obj):
                     return True
             return False
 
@@ -21,7 +21,7 @@ class Assemble:
 
         def process(self, obj):
             for flt in self.filters:
-                if issubclass(flt, Assemble) and not flt.process() or not flt(obj):
+                if issubclass(flt, Logic) and not flt.process() or not flt(obj):
                     return False
             return True
 
