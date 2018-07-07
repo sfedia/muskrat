@@ -3,27 +3,33 @@
 from .defaults import max_connection_depth
 
 
-class Logic:
+class LogicOR:
+    def __init__(self, *args):
+        self.filters = args
 
-    class OR:
-        def __init__(self, *args):
-            self.filters = args
+    def process(self, obj):
+        for flt in self.filters:
+            if unify(flt)(obj):
+                return True
+        return False
 
-        def process(self, obj):
-            for flt in self.filters:
-                if issubclass(flt, Logic) and flt.process() or flt(obj):
-                    return True
-            return False
 
-    class AND:
-        def __init__(self, *args):
-            self.filters = args
+class LogicAND:
+    def __init__(self, *args):
+        self.filters = args
 
-        def process(self, obj):
-            for flt in self.filters:
-                if issubclass(flt, Logic) and not flt.process() or not flt(obj):
-                    return False
-            return True
+    def process(self, obj):
+        for flt in self.filters:
+            if not unify(flt)(obj):
+                return False
+        return True
+
+
+def unify(flt):
+    if isinstance(flt, LogicAND) or isinstance(flt, LogicOR):
+        return flt.process
+    else:
+        return flt
 
 
 def by_type(object_type):
