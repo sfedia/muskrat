@@ -4,23 +4,24 @@ from .defaults import max_connection_depth
 
 
 class Assemble:
+
     class OR:
         def __init__(self, *args):
             self.filters = args
 
         def process(self, obj):
             for flt in self.filters:
-                if flt(obj):
+                if issubclass(flt, Assemble) and flt.process() or flt(obj):
                     return True
             return False
-    
+
     class AND:
         def __init__(self, *args):
             self.filters = args
 
         def process(self, obj):
             for flt in self.filters:
-                if not flt(obj):
+                if isinstance(flt, Assemble) and not flt.process() or not flt(obj):
                     return False
             return True
 
