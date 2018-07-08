@@ -11,11 +11,13 @@ class RelativePolicy:
         self.__options = {}
         self.__default = None
 
-    def add_option(self, fltr, connect=True, insert=True):
-        self.__options[fltr] = dict(connect=connect, insert=insert)
+    def add_option(self, flt, connect=True, insert=True):
+        self.__options[flt] = dict(connect=connect, insert=insert)
+        return self
 
     def add_default(self, connect=True, insert=True):
         self.__default = dict(connect=connect, insert=insert)
+        return self
 
     def get_policy(self, obj):
         for (flt, options) in self.__options.items():
