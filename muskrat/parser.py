@@ -44,47 +44,6 @@ class ParsingObject:
             self.content = update_function(self.content)
 
 
-class ObjectProperties:
-    def __init__(self):
-        self.both_side = {}
-        self.bool_like = {}
-
-    def add_property(self, key, value=None):
-        if value is None:
-            self.bool_like[key] = None
-        else:
-            self.both_side[key] = value
-
-    def get_property(self, key):
-        if key in self.both_side:
-            return self.both_side[key]
-        elif key in self.bool_like:
-            return self.bool_like[key]
-
-    def set_property(self, key, value):
-        if key in self.both_side:
-            self.both_side[key] = value
-        else:
-            raise ValueError
-
-    def remove_property(self, key):
-        if key in self.both_side:
-            del self.both_side[key]
-        elif key in self.bool_like:
-            del self.bool_like[key]
-
-    def dict_properties(self, bl_equivalent):
-        """
-        Return properties as a single dict-type object
-        :param bl_equivalent: value to pass in k,v pair for bool-like properties
-        :return: dict-type object
-        """
-        result = self.both_side
-        for k in self.bool_like:
-            result[k] = bl_equivalent
-        return result
-
-
 class ObjectGrouping:
     def __init__(self, object_type=None):
         self.object_type = object_type
