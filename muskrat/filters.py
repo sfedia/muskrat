@@ -33,7 +33,7 @@ def unify(flt):
 
 
 def by_type(object_type):
-    return lambda obj: obj.object_type == object_type
+    return lambda obj: obj.pattern.object_type == object_type
 
 
 def has_childs():
