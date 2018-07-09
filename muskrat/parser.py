@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from .pattern import *
+from .pattern import PatternNotFound
+
 
 class Parser:
     def __init__(self):
@@ -18,15 +19,10 @@ class Parser:
 
 
 class ParsingObject:
-    def __init__(self, content, parser, allocator):
+    def __init__(self, content, pattern_=None):
         self.connected_objects = []
         self.content = content
-        self._pattern = None
-        for tracker in Tracker.__subclasses__():
-            tracking = tracker(parser, allocator)
-            if tracking.track():
-                self._pattern = tracking.pattern
-                break
+        self._pattern = pattern_
 
     @property
     def pattern(self):
@@ -54,26 +50,3 @@ class ParsingObject:
         self.content += content2insert
         if update_function is not None:
             self.content = update_function(self.content)
-
-class LineProcessing:
-    def __init__(self, line_text):
-        self.line_units = line_text.split()
-        self.current_index = 0
-
-    def current(self):
-        return self.line_units[self.current_index]
-
-    def next(self, add=0):
-        return self.line_units[self.current_index + 1 + add]
-
-
-class ParsingUnit:
-    def __init__(self, line_units, unit_index):
-        self.content = line_units[unit_index]
-
-    def what(self):
-        ...
-
-
-class UnitEntity:
-    def __init__(self):
