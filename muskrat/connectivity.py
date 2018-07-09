@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-from .filters import unify
 from collections import namedtuple
+from .filters import unify
 
 allowed_opts = namedtuple('AllowedOptions', 'connect insert')
 
