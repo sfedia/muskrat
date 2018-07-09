@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-from .filters import *
-
 
 class Pattern:
     def __init__(self, object_type, accept_policy, attach_policy, properties=None):
