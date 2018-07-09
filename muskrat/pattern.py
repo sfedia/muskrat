@@ -72,11 +72,13 @@ class Tracker:
             raise PatternNotFound()
         return self._pattern
 
-    @property
-    def extractor(self):
+    def get_extractor(self):
         if self._extractor is None:
             raise ExtractorNotFound()
         return self._extractor
+
+    def set_extractor(self, value):
+        self._extractor = value
 
     def prev(self, index, condition=None):
         if condition is not None:
@@ -86,6 +88,8 @@ class Tracker:
 
     def next(self, index):
         self.allocator.next(index)
+
+    extractor = property(get_extractor, set_extractor)
 
 
 class PatternNotFound(Exception):
