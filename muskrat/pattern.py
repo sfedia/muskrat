@@ -60,21 +60,23 @@ class Tracker:
         self.parser = parser
         self.allocator = allocator
         self._pattern = None
+        self._extractor = None
 
     def track(self):
         # This one may be redefined by the inherited tracker class
         return False
 
-    def get_pattern(self):
+    @property
+    def pattern(self):
         if self._pattern is None:
             raise PatternNotFound()
         return self._pattern
 
-    def set_pattern(self, pattern_object):
-        self._pattern = pattern_object
-
-    def del_pattern(self):
-        raise PatternNotFound()
+    @property
+    def extractor(self):
+        if self._extractor is None:
+            raise ExtractorNotFound()
+        return self._extractor
 
     def prev(self, index, condition=None):
         if condition is not None:
@@ -85,8 +87,10 @@ class Tracker:
     def next(self, index):
         self.allocator.next(index)
 
-    pattern = property(get_pattern, set_pattern, del_pattern)
-
 
 class PatternNotFound(Exception):
+    pass
+
+
+class ExtractorNotFound(Exception):
     pass
