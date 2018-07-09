@@ -22,8 +22,8 @@ class XMLQuery:
     def get_parameters(obj):
         return dict(
             {
-                "type": obj.object_type,
+                "type": obj.pattern.object_type,
                 "content": obj.content
             },
-            **obj.properties.dict_properties(".")
+            **obj.pattern.properties.dict_properties(".")
         )
