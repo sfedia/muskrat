@@ -25,7 +25,6 @@ class Pattern:
             self.focus_on = focus_on
 
 
-
 class PatternProperties:
     def __init__(self):
         self.both_side = {}
