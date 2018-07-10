@@ -2,14 +2,28 @@
 
 
 class Pattern:
-    def __init__(self, object_type, accept_policy, attach_policy, properties=None):
+    def __init__(self, object_type, accept_policy, attach_policy, properties=None, focus_on=None):
+        """
+        Pattern class __init__
+        :param object_type: object type
+        :param accept_policy: Accept class instance
+        :param attach_policy: Attach class instance
+        :param properties: properties to be set when creating the instance
+        :param focus_on: function to search any previous element in Parser
+        """
         self.object_type = object_type
         self.accept_policy = accept_policy
         self.attach_policy = attach_policy
+        self.focus_on = lambda parser: parser.get(1)
+
         if properties is None:
             self.properties = PatternProperties()
         else:
             self.properties = properties
+
+        if focus_on is not None:
+            self.focus_on = focus_on
+
 
 
 class PatternProperties:
