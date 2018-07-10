@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import sys
+from .pattern import *
+from .connectivity import Accept, Attach
 
 feature_coming = """This feature is coming soon (check for the next version: see \
 https://github.com/prodotiscus/muskrat or use PyPI)"""
@@ -13,6 +15,16 @@ class Defaults:
 
 
 defaults = Defaults()
+
+
+class Grouping(Pattern):
+    def __init__(self, grouping_name, properties=None):
+        accept_policy = Accept()
+        accept_policy.add_default(connect=True, insert=False)
+        attach_policy = Attach()
+        attach_policy.add_default(connect=True, insert=False)
+        props = dict({"name": grouping_name}, **({} if properties is None else properties))
+        Pattern.__init__(self, "Grouping", accept_policy, attach_policy, props)
 
 
 class VersionOutOfDate(Exception):
