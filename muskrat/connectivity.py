@@ -8,24 +8,24 @@ allowed_opts = namedtuple('AllowedOptions', 'connect insert')
 
 class RelativePolicy:
     def __init__(self):
-        self.__options = {}
-        self.__default = None
+        self.options = {}
+        self.default = None
 
     def add_option(self, flt, connect=True, insert=True):
-        self.__options[flt] = dict(connect=connect, insert=insert)
+        self.options[flt] = dict(connect=connect, insert=insert)
         return self
 
     def add_default(self, connect=True, insert=True):
-        self.__default = dict(connect=connect, insert=insert)
+        self.default = dict(connect=connect, insert=insert)
         return self
 
     def get_policy(self, obj):
-        for (flt, options) in self.__options.items():
+        for (flt, options) in self.options.items():
             if unify(flt)(obj):
                 return allowed_opts(options['connect'], options['insert'])
-        if self.__default is None:
+        if self.default is None:
             raise MissingDefault()
-        return allowed_opts(self.__default['connect'], self.__default['insert'])
+        return allowed_opts(self.default['connect'], self.default['insert'])
 
 
 class Accept(RelativePolicy):
@@ -37,7 +37,7 @@ class Accept(RelativePolicy):
 class Attach(RelativePolicy):
     def __init__(self):
         RelativePolicy.__init__(self)
-        pass
+        self.default = dict(append=True)
 
 
 def merge_policies(*args):
