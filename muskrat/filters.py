@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from .defaults import max_connection_depth
+from .defaults import defaults
 
 
 class LogicOR:
@@ -70,8 +70,8 @@ def connection_depth(value=None, compare=None):
         raise ValueError()
 
     def get_depth(obj):
-        last, counter = obj.dive(counter=max_connection_depth)
-        depth = max_connection_depth - counter
+        last, counter = obj.dive(counter=defaults.max_connection_depth)
+        depth = defaults.max_connection_depth - counter
         if compare is None:
             return depth == value
         else:
