@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import re
-from collections import namedtuple
 from .pattern import *
 from .defaults import *
 from .parser import ParsingObject
