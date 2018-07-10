@@ -36,6 +36,21 @@ def by_type(object_type):
     return lambda obj: obj.pattern.object_type == object_type
 
 
+def by_property(bool_property=None, kw_property=None, kw_value=None):
+    if bool_property is None or kw_property is None:
+        raise ValueError()
+    if bool_property is not None:
+        return lambda obj: obj.pattern.properties.property_exists(bool_property)
+    else:
+        def check_prop(obj):
+            if obj.pattern.properties.property_exists(kw_property):
+                prop = obj.pattern.properties.get_property(kw_property)
+                return prop == kw_value
+            else:
+                return False
+        return check_prop
+
+
 def has_childs():
     def scan_childs(obj):
         if obj.connected_objects:
