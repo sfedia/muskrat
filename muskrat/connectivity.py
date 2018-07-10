@@ -37,7 +37,7 @@ class Accept(RelativePolicy):
 class Attach(RelativePolicy):
     def __init__(self):
         RelativePolicy.__init__(self)
-        self.default = dict(append=True)
+        self.default = dict(connect=False, insert=False)
 
 
 def merge_policies(*args):
