@@ -35,6 +35,9 @@ class PatternProperties:
         else:
             raise ValueError
 
+    def property_exists(self, key):
+        return key in self.both_side or key in self.bool_like
+
     def remove_property(self, key):
         if key in self.both_side:
             del self.both_side[key]
