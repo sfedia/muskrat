@@ -73,7 +73,7 @@ class ParsingObject:
         Internal method used to find connected (child) objects
         :param counter: number of element to select which satisfies the condition
         :type counter: int
-        :param condition: object-cheking condition if the form of function
+        :param condition: object-checking condition if the form of function
         :rtype: (ParsingObject, int)
         """
         for obj in reversed(self.connected_objects):
