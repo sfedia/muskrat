@@ -18,7 +18,7 @@ class Allocator:
         self.units = []
         self.current = position
         self.splitter = splitter
-        if not issubclass(self.splitter, Extractor):
+        if not issubclass(type(self.splitter), Extractor):
             raise ValueError()
 
     def make_units(self):
