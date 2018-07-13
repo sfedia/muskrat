@@ -10,7 +10,7 @@ class Allocator:
     """Allocator is used to divide the whole text into units"""
     def __init__(self, text, splitter, parser, position=0):
         """
-        Create an allocator
+        Create an allocator instance
         :param text: the whole text
         :type text: str
         :param splitter: template to split the text into primary units
@@ -21,6 +21,7 @@ class Allocator:
         """
         self.newline_equivalent = " "
         self.carriage_equivalent = ""
+        self.end_position = None
         self.greedy = True
         self.parallel_moving = False
         self.__char_equivalents = {}
@@ -35,6 +36,9 @@ class Allocator:
     def make_units(self):
         if self.units:
             raise AlreadyAllocated()
+
+        if self.end_position:
+            self.text = self.text[:self.end_position]
 
         self.text = self.text.replace("\n", self.newline_equivalent)
         self.text = self.text.replace("\r", self.carriage_equivalent)
