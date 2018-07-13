@@ -61,7 +61,7 @@ def has_childs():
 
 def connection_depth(value=None, compare=None):
     """
-    Generates function which compares connection depth of the element with the given value.
+    Generates a function which compares connection depth of the element with the given value.
     :param value: value to compare to produce equality expression
     :param compare: expression (function) which takes depth as argument and returns boolean
     :return: function (function wrapper)
