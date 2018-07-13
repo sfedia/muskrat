@@ -6,7 +6,7 @@ from lxml import etree
 class XMLQuery:
     def __init__(self, object_row):
         """
-        Translating sequence of ParsingObject to XML
+        Translate sequence of ParsingObject to XML
         :param object_row: list of ParsingObject
         """
         self.default_tag = 'object'
