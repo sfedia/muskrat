@@ -12,6 +12,10 @@ class Parser:
             fc, behind = obj.dive(behind, condition)
             if fc is not None:
                 return fc
+            if condition(obj):
+                behind -= 1
+            if not behind:
+                return obj
         return None
 
     def append(self, obj):
