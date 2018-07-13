@@ -3,7 +3,7 @@
 from .defaults import *
 
 
-class LogicOR:
+class LogicalOR:
     def __init__(self, *args):
         self.filters = args
 
@@ -14,7 +14,7 @@ class LogicOR:
         return False
 
 
-class LogicAND:
+class LogicalAND:
     def __init__(self, *args):
         self.filters = args
 
@@ -26,7 +26,7 @@ class LogicAND:
 
 
 def unify(flt):
-    if isinstance(flt, LogicAND) or isinstance(flt, LogicOR):
+    if isinstance(flt, LogicalAND) or isinstance(flt, LogicalOR):
         return flt.process
     else:
         return flt
