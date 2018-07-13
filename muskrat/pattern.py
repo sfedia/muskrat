@@ -1,10 +1,14 @@
 #!/usr/bin/python3
 
+from .parser import Parser, ParsingObject
+from .allocator import Allocator
+
 
 class Pattern:
     def __init__(self, object_type, accept_policy, attach_policy, properties=None, focus_on=None):
         """
-        Pattern class __init__
+        Pattern subclass-instances are used to assign properties to objects, give them names, \
+        create policies for them etc.
         :param object_type: object type
         :param accept_policy: Accept class instance
         :param attach_policy: Attach class instance
@@ -31,27 +35,52 @@ class PatternProperties:
         self.bool_like = {}
 
     def add_property(self, key, value=None):
+        """
+        Add a property to the object pattern
+        :param key: property name
+        :param value: value of the property
+        """
         if value is None:
             self.bool_like[key] = None
         else:
             self.both_side[key] = value
 
     def get_property(self, key):
+        """
+        Get a property of the object pattern
+        :param key: property name
+        """
         if key in self.both_side:
             return self.both_side[key]
         elif key in self.bool_like:
             return self.bool_like[key]
 
     def set_property(self, key, value):
+        """
+        Set a property of the object pattern
+        :param key: property name
+        :param value: value of the property
+        :raises: ValueError
+        """
         if key in self.both_side:
             self.both_side[key] = value
         else:
             raise ValueError
 
     def property_exists(self, key):
+        """
+        Check if a property exists for the object pattern
+        :param key: property name
+        :rtype: bool
+        """
         return key in self.both_side or key in self.bool_like
 
     def remove_property(self, key):
+        """
+        Remove a property of the object pattern
+        :param key: property name
+        :raises: KeyError
+        """
         if key in self.both_side:
             del self.both_side[key]
         elif key in self.bool_like:
@@ -60,8 +89,9 @@ class PatternProperties:
     def dict_properties(self, bl_equivalent):
         """
         Return properties as a single dict-type object
-        :param bl_equivalent: value to pass in k,v pair for bool-like properties
-        :return: dict-type object
+        :param bl_equivalent: value to pass into k/v pair for bool-like properties
+        :return: properties of the object pattern
+        :rtype: dict
         """
         result = self.both_side
         for k in self.bool_like:
@@ -70,7 +100,14 @@ class PatternProperties:
 
 
 class Tracker:
+    """Trackers are used to extract meaningful units from the text"""
     def __init__(self, parser, allocator):
+        """
+        :param parser: parser instance
+        :type parser: Parser
+        :param allocator: allocator instance
+        :type allocator: Allocator
+        """
         self.parser = parser
         self.allocator = allocator
         self._pattern = None
@@ -96,13 +133,24 @@ class Tracker:
     def set_extractor(self, value):
         self._extractor = value
 
-    def prev(self, index, condition=None):
+    def prev(self, index=1, condition=None):
+        """
+        Get the previous object (call the parser)
+        :param index: number of steps taken backwards
+        :param condition: object-checking condition if the form of function
+        :rtype: ParsingObject
+        """
         if condition is not None:
             return self.parser.get(index, condition)
         else:
             return self.parser.get(index)
 
-    def next(self, index):
+    def next(self, index=1):
+        """
+        Get the previous object (call the parser)
+        :param index: number of steps taken backwards
+        :rtype: ParsingObject
+        """
         self.allocator.next(index)
 
     extractor = property(get_extractor, set_extractor)
