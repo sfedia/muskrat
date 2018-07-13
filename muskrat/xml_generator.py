@@ -10,7 +10,10 @@ class XMLQuery:
         :param object_row: list of ParsingObject
         """
         self.default_tag = 'object'
-        self.row = [self.object2tag(obj) for obj in object_row]
+        self.root_tag = 'root'
+        self.root = etree.Element(self.root_tag)
+        for obj in object_row:
+            self.root.append(self.object2tag(obj))
 
     def object2tag(self, obj):
         obj_tag = etree.Element(self.default_tag, self.get_parameters(obj))
