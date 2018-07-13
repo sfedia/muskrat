@@ -80,11 +80,13 @@ class Tracker:
         # This one may be redefined by the inherited tracker class
         return False
 
-    @property
-    def pattern(self):
+    def get_pattern(self):
         if self._pattern is None:
             raise PatternNotFound()
         return self._pattern
+
+    def set_pattern(self, value):
+        self._pattern = value
 
     def get_extractor(self):
         if self._extractor is None:
@@ -104,6 +106,7 @@ class Tracker:
         self.allocator.next(index)
 
     extractor = property(get_extractor, set_extractor)
+    pattern = property(get_pattern, set_pattern)
 
 
 class PatternNotFound(Exception):
