@@ -64,7 +64,6 @@ class Allocator:
             tracking = tracker(self.parser, self)
             if tracking.track():
                 trackers.append(tracking)
-                break
         if not trackers:
             raise CannotMoveRight("Failed on unit %d = '%s'" % (self.current, current,))
 
