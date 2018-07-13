@@ -68,10 +68,10 @@ class Allocator:
         self.make_units()
         self.start_move()
 
-    def next(self, add=0):
-        if self.current + add >= len(self.units) - 1:
+    def next(self, add=1):
+        if self.current + add >= len(self.units):
             return None
-        return self.units[self.current + 1 + add]
+        return self.units[self.current + add]
 
     def move_right(self):
         current = self.units[self.current]
