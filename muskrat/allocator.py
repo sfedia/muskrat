@@ -87,6 +87,7 @@ class Allocator:
         left, right = parts[0].pair
         left_object = ParsingObject(left, parts[0].pattern)
         focused_prev = parts[0].pattern.focus_on(self.parser)
+
         if focused_prev is None:
             self.parser.append(left_object)
         else:
@@ -94,7 +95,8 @@ class Allocator:
             if mrg.connect or mrg.insert:
                 methods = sorted(
                     [m for m in [(mrg.connect, 'connect'), (mrg.insert, 'insert')] if m[0]],
-                    key=lambda m: defaults.methods_priority[m[1]])
+                    key=lambda m: defaults.methods_priority[m[1]]
+                )
                 for m in methods:
                     if m[1] == "connect":
                         focused_prev.connect(left_object)
