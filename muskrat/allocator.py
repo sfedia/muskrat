@@ -84,7 +84,7 @@ class Allocator:
             raise VersionOutOfDate(feature_coming)
 
         parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
-        left, right = parts[0].pair[0]
+        left, right = parts[0].pair
         left_object = ParsingObject(left, parts[0].pattern)
         focused_prev = parts[0].pattern.focus_on(self.parser)
         if focused_prev is None:
