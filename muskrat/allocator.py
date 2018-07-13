@@ -2,12 +2,23 @@
 import re
 from .pattern import *
 from .defaults import *
-from .parser import ParsingObject
+from .parser import Parser, ParsingObject
 from .connectivity import *
 
 
 class Allocator:
+    """Allocator is used to divide the whole text into units"""
     def __init__(self, text, splitter, parser, position=0):
+        """
+        Create an allocator
+        :param text: the whole text
+        :type text: str
+        :param splitter: template to split the text into primary units
+        :type splitter: Extractor
+        :param parser: parser object which acquires the parsed units
+        :type parser: Parser
+        :param position: index of a char allocator should start the job from
+        """
         self.newline_equivalent = " "
         self.carriage_equivalent = ""
         self.greedy = True
@@ -53,6 +64,7 @@ class Allocator:
             self.move_right()
 
     def start(self):
+        """Start the job"""
         self.make_units()
         self.start_move()
 
@@ -156,12 +168,18 @@ class Allocator:
             return left, right
 
     def add_char_equivalent(self, char, equivalent):
+        """
+        Add an A->B matching to replace chars before text splitting
+        :param char: A side
+        :param equivalent: B side
+        """
         if len(char) + len(equivalent) != 2:
             raise ValueError()
         self.__char_equivalents[char] = equivalent
 
 
 class Extractor:
+    """Native templates which simplify char-sequence matching"""
     def __init__(self, value):
         self.value = value
 
