@@ -18,7 +18,12 @@ defaults = Defaults()
 
 
 class Grouping(Pattern):
+    """Default pattern subclass for creating object groups"""
     def __init__(self, grouping_name, properties=None):
+        """
+        :param grouping_name: name of the group
+        :param properties: group properties
+        """
         accept_policy = Accept()
         accept_policy.add_default(connect=True, insert=False)
         attach_policy = Attach()
