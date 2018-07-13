@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from lxml import etree
+from .parser import ParsingObject
 
 
 class XMLQuery:
@@ -16,6 +17,13 @@ class XMLQuery:
             self.root.append(self.object2tag(obj))
 
     def object2tag(self, obj):
+        """
+        Convert ParsingObject to XML tag
+        :param obj: ParsingObject instance
+        :type obj: ParsingObject
+        :return: XML tag
+        :rtype: etree.Element
+        """
         obj_tag = etree.Element(self.default_tag, self.get_parameters(obj))
         for child in obj.connected_objects:
             obj_tag.append(self.object2tag(child))
