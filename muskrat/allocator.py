@@ -90,7 +90,10 @@ class Allocator:
         if focused_prev is None:
             self.parser.append(left_object)
         else:
-            mrg = merge_policies(focused_prev.pattern.accept_policy, parts[0].pattern.attach_policy)
+            mrg = merge_policies(
+                focused_prev.pattern.accept_policy.get_policy(parts[0]),
+                parts[0].pattern.attach_policy.get_policy(focused_prev)
+            )
             if mrg.connect or mrg.insert:
                 methods = sorted(
                     [m for m in [(mrg.connect, 'connect'), (mrg.insert, 'insert')] if m[0]],
