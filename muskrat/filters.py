@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from .defaults import defaults
+from .defaults import *
 
 
 class LogicOR:
