@@ -7,12 +7,12 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="muskrat",
-    version="0.0.3",
+    version="1.0.0",
     author="Fyodor Sizov",
     author_email="f.sizov@yandex.ru",
     description="Minimalistic non-BNF text parser",
     long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     url="https://github.com/prodotiscus/muskrat",
     packages=setuptools.find_packages(),
     classifiers=(
