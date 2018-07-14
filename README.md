@@ -1,11 +1,7 @@
 Muskrat: minimalistic non-BNF text parser and tree generator
 =========================
 
-![image](https://img.shields.io/badge/release-0.0.1-yellowgreen.svg%0A%20:target:%20https://pypi.org/project/muskrat/)
-
-![image](https://img.shields.io/badge/license-GPL--3.0-green.svg%0A%20:target:%20https://pypi.org/project/muskrat/)
-
-![image](https://img.shields.io/badge/python-%3E%3D3.4-blue.svg%0A%20:target:%20https://pypi.org/project/muskrat/)
+[![Software license][ico-license]](LICENSE) ![Software release][ico-release] ![Software requirements][ico-requirements]
 
 Installation
 ============
@@ -27,3 +23,6 @@ How to Contribute
 3.  Write a test which shows that the bug was fixed or that the feature
     works as expected.
 
+[ico-release]: https://img.shields.io/badge/release-0.0.1-yellowgreen.svg
+[ico-license]: https://img.shields.io/badge/license-GPL--3.0-green.svg
+[ico-requirements]: https://img.shields.io/badge/python-%3E%3D3.4-blue.svg
