@@ -2,7 +2,7 @@
 
 import setuptools
 
-with open("README.rst", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
@@ -17,7 +17,6 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=(
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License v3 or later",
         "Operating System :: OS Independent",
     ),
 )
