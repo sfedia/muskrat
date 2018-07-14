@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from .pattern import Pattern, PatternNotFound
+import muskrat.pattern
 
 
 class Parser:
@@ -44,7 +44,7 @@ class ParsingObject:
         Create the parsing object instance
         :param content: content of the object
         :param pattern_: pattern of the object
-        :type pattern_: Pattern
+        :type pattern_: muskrat.pattern.Pattern
         """
         self.connected_objects = []
         self.content = content
@@ -57,7 +57,7 @@ class ParsingObject:
         :return: pattern
         """
         if self._pattern is None:
-            raise PatternNotFound()
+            raise muskrat.pattern.PatternNotFound()
         return self._pattern
 
     def connect(self, object2connect):

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from .parser import Parser, ParsingObject
-from .allocator import Allocator
+import muskrat.allocator
 
 
 class Pattern:
@@ -106,7 +106,7 @@ class Tracker:
         :param parser: parser instance
         :type parser: Parser
         :param allocator: allocator instance
-        :type allocator: Allocator
+        :type allocator: muskrat.allocator.Allocator
         """
         self.parser = parser
         self.allocator = allocator
