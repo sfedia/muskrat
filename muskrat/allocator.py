@@ -52,6 +52,9 @@ class Allocator:
         elif isinstance(self.splitter, RegexString):
             self.units = re.split(self.splitter.value, self.text)
 
+        elif isinstance(self.splitter, LimitRegexString):
+            self.units = [x.group(0) for x in re.finditer(self.splitter.value, self.text)]
+
         elif isinstance(self.splitter, CharList):
             self.units = re.split('[' + re.escape("".join(self.splitter.value)) + ']', self.text)
 
@@ -152,6 +155,15 @@ class Allocator:
                 left = rs.group(0)
                 right = unit_string[len(left):]
 
+        elif isinstance(extractor, LimitRegexString):
+            limit_search = re.search(extractor.value, unit_string)
+            if not limit_search:
+                left = unit_string
+                right = ""
+            else:
+                left = unit_string[:limit_search.start()]
+                right = unit_string[limit_search.start():]
+
         elif isinstance(extractor, LengthInteger) and len(unit_string) >= extractor.value:
             left = unit_string[:extractor.value]
             right = unit_string[extractor.value:]
@@ -214,6 +226,11 @@ class CharString(Extractor):
 
 
 class RegexString(Extractor):
+    def __init__(self, value):
+        Extractor.__init__(self, value)
+
+
+class LimitRegexString(Extractor):
     def __init__(self, value):
         Extractor.__init__(self, value)
 
