@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from collections import namedtuple
+from .defaults import *
 from .filters import unify
 from .parser import ParsingObject
 
@@ -35,6 +36,9 @@ class RelativePolicy:
         """
         self.default = dict(connect=connect, insert=insert)
         return self
+
+    def add_group_connection(self, group_name):
+        self.add_option(group_filter(group_name), connect=True, insert=False)
 
     def get_policy(self, obj):
         """

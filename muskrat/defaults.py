@@ -2,7 +2,9 @@
 
 import sys
 from .pattern import *
+from .filters import *
 from .connectivity import Accept, Attach
+
 
 feature_coming = """This feature is coming soon (check for the next version: see \
 https://github.com/prodotiscus/muskrat or use PyPI)"""
@@ -30,6 +32,10 @@ class Grouping(Pattern):
         attach_policy.add_default(connect=True, insert=False)
         props = dict({"name": grouping_name}, **({} if properties is None else properties))
         Pattern.__init__(self, "Grouping", accept_policy, attach_policy, props)
+
+
+def group_filter(group_name):
+    return LogicalAND(by_type("Grouping"), by_property(kw_property="name", kw_value=group_name))
 
 
 class VersionOutOfDate(Exception):
