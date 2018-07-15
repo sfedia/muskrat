@@ -151,7 +151,10 @@ class Tracker:
         :param index: number of steps taken backwards
         :rtype: ParsingObject
         """
-        self.allocator.next(index)
+        return self.allocator.next(index)
+
+    def current(self):
+        return self.allocator.units[self.allocator.current]
 
     extractor = property(get_extractor, set_extractor)
     pattern = property(get_pattern, set_pattern)
