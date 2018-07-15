@@ -112,6 +112,7 @@ class Tracker:
         self.allocator = allocator
         self._pattern = None
         self._extractor = None
+        self.takes_all = False
 
     def track(self):
         # This one may be redefined by the inherited tracker class

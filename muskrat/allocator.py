@@ -95,7 +95,7 @@ class Allocator:
         part_obj = namedtuple('Part', 'pattern pair')
         for tracker in trackers:
             try:
-                part = part_obj(tracker.pattern, self.extract(current, tracker.extractor))
+                part = part_obj(tracker.pattern, self.extract(current, tracker.extractor, tracker.takes_all))
             except ExtractionFailed:
                 continue
             parts.append(part)
@@ -136,7 +136,7 @@ class Allocator:
             self.units.insert(self.current, right)
 
     @staticmethod
-    def extract(unit_string, extractor):
+    def extract(unit_string, extractor, takes_all=False):
         left = None
         right = None
 
@@ -186,6 +186,8 @@ class Allocator:
         if left is None or right is None:
             raise ExtractionFailed()
         else:
+            if takes_all and right:
+                raise ExtractionFailed()
             return left, right
 
     def add_char_equivalent(self, char, equivalent):
