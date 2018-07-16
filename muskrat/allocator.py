@@ -85,6 +85,9 @@ class Allocator:
                 self.text[n:n+self.splitter.value] for n in range(0, len(self.text), self.splitter.value)
             ]
 
+        if self.end_position and len(self.units) > 1:
+            del self.units[-1]
+
     def start_move(self):
         while self.current < len(self.units):
             self.move_right()
