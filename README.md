@@ -23,6 +23,6 @@ How to Contribute
 3.  Write a test which shows that the bug was fixed or that the feature
     works as expected.
 
-[ico-release]: https://img.shields.io/badge/release-1.0.0-green.svg
+[ico-release]: https://img.shields.io/badge/release-1.0.1-green.svg
 [ico-license]: https://img.shields.io/badge/license-GPL--3.0-green.svg
 [ico-requirements]: https://img.shields.io/badge/python-%3E%3D3.4-blue.svg
