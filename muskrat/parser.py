@@ -27,6 +27,7 @@ class Parser:
     """
     def __init__(self):
         self.objects = []
+        self.depth_limit = None
 
     def get(self, behind=1, condition=lambda obj: True):
         """
@@ -36,6 +37,9 @@ class Parser:
         :param condition: object-cheking condition if the form of function
         :rtype: ParsingObject
         """
+        if self.depth_limit and behind > self.depth_limit:
+            return None
+
         for obj in reversed(self.objects):
             fc, behind = obj.dive(behind, condition)
             if fc is not None:

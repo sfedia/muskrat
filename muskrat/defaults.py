@@ -33,6 +33,7 @@ class Defaults:
     def __init__(self):
         self.max_connection_depth = sys.getrecursionlimit()
         self.methods_priority = dict(connect=0, insert=1, append=2)
+        self.framing_group_length = 4
 
 
 defaults = Defaults()
