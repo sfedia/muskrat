@@ -56,7 +56,10 @@ class RelativePolicy:
         return self
 
     def add_group_connection(self, group_name):
-        self.add_option(group_filter(group_name), connect=True, insert=False)
+        if self.__class__.__name__ == "Attach":
+            self.add_option(group_filter(group_name), connect=True, insert=False)
+        else:
+            raise DirectionConfused()
 
     def get_policy(self, obj):
         """
@@ -94,4 +97,8 @@ def merge_policies(*args):
 
 
 class MissingDefault(EnvironmentError):
+    pass
+
+
+class DirectionConfused(Exception):
     pass
