@@ -6,7 +6,7 @@
 Welcome to muskrat's documentation!
 ===================================
 
-. toctree::
+.. toctree::
    :maxdepth: 2
    :caption: Contents:
    
