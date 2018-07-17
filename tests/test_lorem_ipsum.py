@@ -55,7 +55,7 @@ class DigitTr(Tracker):
 def test_main():
     parser = Parser()
     text = "lorem1 ipsum2 dolor3 sit4 amet5"
-    allocator = Allocator(text, muskrat.allocator.WhitespaceVoid(), parser)
+    allocator = Allocator(text, muskrat.allocator.RegexString('[A-Z]'), parser)
     allocator.start()
     assert scan_row(
         parser.objects,
