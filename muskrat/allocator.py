@@ -186,7 +186,10 @@ class Allocator:
                     if m[1] == "connect":
                         focused_prev.connect(left_object)
                     elif m[1] == "insert":
-                        focused_prev.insert_content(left)
+                        if not parts[0].pattern.insertion_prepend_value:
+                            focused_prev.insert_content(left)
+                        else:
+                            focused_prev.insert_content(parts[0].pattern.prepended_value + left)
             else:
                 self.parser.append(left_object)
 

@@ -37,6 +37,8 @@ class Pattern:
         self.accept_policy = accept_policy
         self.attach_policy = attach_policy
         self.focus_on = lambda parser: parser.get(1)
+        self.insertion_prepend_value = False
+        self.prepended_value = " "
 
         if properties is None:
             self.properties = PatternProperties()
