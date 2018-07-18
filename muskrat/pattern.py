@@ -174,6 +174,9 @@ class Tracker:
         """
         return self.allocator.next(index)
 
+    def next_by_extractor(self, *args):
+        return self.allocator.next_by_extractor(*args)
+
     def current(self):
         return self.allocator.units[self.allocator.current]
 
