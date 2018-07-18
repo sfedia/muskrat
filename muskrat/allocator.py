@@ -125,6 +125,24 @@ class Allocator:
             return None
         return self.units[self.current + add]
 
+    def next_by_extractor(self, extractor, ahead=1, full_coverage=True, stop_at=None):
+        for i in range(self.current, len(self.units)):
+            if self.current - i > stop_at:
+                break
+            try:
+                left, right = self.extract(self.units[i], extractor)
+                if right and full_coverage:
+                    continue
+                else:
+                    ahead -= 1
+                    if ahead:
+                        return self.units[i]
+                    else:
+                        continue
+            except ExtractionFailed:
+                continue
+        return None
+
     def check_framing(self, index):
         if self.framing_group and self.framing_group in self.units[index]:
             left, right = self.units[index].split(self.framing_group)
