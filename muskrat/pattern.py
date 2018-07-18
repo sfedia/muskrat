@@ -140,7 +140,7 @@ class Tracker:
 
     def get_pattern(self):
         if self._pattern is None:
-            raise PatternNotFound()
+            raise PatternNotFound(self.__class__.__name__)
         return self._pattern
 
     def set_pattern(self, value):
