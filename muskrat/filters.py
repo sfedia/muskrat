@@ -53,7 +53,7 @@ class LogicalNOT:
 
 
 def unify(flt):
-    if isinstance(flt, LogicalAND) or isinstance(flt, LogicalOR):
+    if isinstance(flt, LogicalAND) or isinstance(flt, LogicalOR) or isinstance(flt, LogicalNOT):
         return flt.process
     else:
         return flt
