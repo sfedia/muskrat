@@ -19,18 +19,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-from . import allocator
-from . import connectivity
-from . import defaults
-from . import filters
-from . import parser
-from . import pattern
-from . import txt_tree_generator
-from . import xml_generator
+class TXTTree:
+    def __init__(self, object_row, indent=2):
+        self.object_row = object_row
+        self.indent = indent
 
+    def print_row(self, row, indent):
+        for obj in row:
+            self.print(" " * indent + '<%s> = "%s"' % (obj.pattern.object_type, obj.content,))
+            for (prop, value) in obj.pattern.properties.dict_properties(None):
+                prop_msg = " " * indent + "- " + prop
+                if value is not None:
+                    prop_msg += ": " + '"%s"' % value
+                self.print(prop_msg)
+            self.print_row(obj.connected_objects, indent + self.indent)
 
-__author__ = "Fyodor Sizov"
-__copyright__ = "Copyright 2018, Fyodor Sizov"
-__license__ = "GPL 3.0"
-__version__ = "1.0.1"
-__email__ = "prodotiscus@gmail.com"
+    def print(self, message):
+        print(message)
+
+    def build(self):
+        self.print_row(self.object_row, 0)
