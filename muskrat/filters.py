@@ -44,6 +44,14 @@ class LogicalAND:
         return True
 
 
+class LogicalNOT:
+    def __init__(self, flt):
+        self.filter = flt
+
+    def process(self, obj):
+        return not unify(self.filter)(obj)
+
+
 def unify(flt):
     if isinstance(flt, LogicalAND) or isinstance(flt, LogicalOR):
         return flt.process
