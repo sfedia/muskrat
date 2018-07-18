@@ -104,7 +104,7 @@ class ParsingObject:
             if counter < 0:
                 break
             elif not counter:
-                return self, 0
+                return obj, 0
             found_child, counter = obj.dive(counter, condition)
             if found_child is not None:
                 return found_child, counter
