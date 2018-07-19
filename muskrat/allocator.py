@@ -186,7 +186,7 @@ class Allocator:
         parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
         left, right = parts[0].pair
         left_object = ParsingObject(left, parts[0].pattern)
-        focused_prev = parts[0].pattern.focus_on(self.parser)
+        focused_prev = parts[0].pattern.focus_on(self.parser, left)
 
         if focused_prev is None:
             self.parser.append(left_object)

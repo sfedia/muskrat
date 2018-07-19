@@ -36,7 +36,7 @@ class Pattern:
         self.object_type = object_type
         self.accept_policy = accept_policy
         self.attach_policy = attach_policy
-        self.focus_on = lambda parser: parser.get(1)
+        self.focus_on = lambda parser, content: parser.get(1)
         self.insertion_prepend_value = False
         self.prepended_value = " "
 
