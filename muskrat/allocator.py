@@ -169,10 +169,10 @@ class Allocator:
             raise CannotMoveRight("Failed on unit %d = '%s'" % (self.current, current,))
 
         parts = []
-        part_obj = namedtuple('Part', 'pattern pair')
+        part_obj = namedtuple('Part', 'tracker pair')
         for tracker in trackers:
             try:
-                part = part_obj(tracker.pattern, self.extract(current, tracker.extractor, tracker.takes_all))
+                part = part_obj(tracker, self.extract(current, tracker.extractor, tracker.takes_all))
             except ExtractionFailed:
                 continue
             parts.append(part)
@@ -185,15 +185,15 @@ class Allocator:
 
         parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
         left, right = parts[0].pair
-        left_object = ParsingObject(left, parts[0].pattern)
-        focused_prev = parts[0].pattern.focus_on(self.parser, left)
+        left_object = ParsingObject(left, parts[0].tracker.pattern)
+        focused_prev = parts[0].tracker.pattern.focus_on(self.parser, left)
 
         if focused_prev is None:
             self.parser.append(left_object)
         else:
             mrg = merge_policies(
                 focused_prev.pattern.accept_policy.get_policy(parts[0]),
-                parts[0].pattern.attach_policy.get_policy(focused_prev)
+                parts[0].tracker.pattern.attach_policy.get_policy(focused_prev)
             )
             if mrg.connect or mrg.insert:
                 methods = sorted(
@@ -203,11 +203,15 @@ class Allocator:
                 for m in methods:
                     if m[1] == "connect":
                         focused_prev.connect(left_object)
+                        for conn_hook in parts[0].tracker.connection_hooks:
+                            conn_hook(parts[0].tracker.parser, parts[0].tracker.allocator, left)
                     elif m[1] == "insert":
-                        if not parts[0].pattern.insertion_prepend_value:
+                        if not parts[0].tracker.pattern.insertion_prepend_value:
                             focused_prev.insert_content(left)
                         else:
-                            focused_prev.insert_content(parts[0].pattern.prepended_value + left)
+                            focused_prev.insert_content(parts[0].tracker.pattern.prepended_value + left)
+                        for ins_hook in parts[0].tracker.insertion_hooks:
+                            ins_hook(parts[0].tracker.parser, parts[0].tracker.allocator, left)
             else:
                 self.parser.append(left_object)
 

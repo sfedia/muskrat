@@ -132,6 +132,8 @@ class Tracker:
         self.allocator = allocator
         self._pattern = None
         self._extractor = None
+        self.connection_hooks = []
+        self.insertion_hooks = []
         self.takes_all = False
 
     def track(self):
@@ -179,6 +181,12 @@ class Tracker:
 
     def current(self):
         return self.allocator.units[self.allocator.current]
+
+    def add_connection_hook(self, conn_hook):
+        self.connection_hooks.append(conn_hook)
+
+    def add_insertion_hook(self, ins_hook):
+        self.insertion_hooks.append(ins_hook)
 
     extractor = property(get_extractor, set_extractor)
     pattern = property(get_pattern, set_pattern)
