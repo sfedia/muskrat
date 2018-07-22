@@ -64,7 +64,7 @@ def by_type(object_type):
 
 
 def by_property(bool_property=None, kw_property=None, kw_value=None):
-    if bool_property is None or kw_property is None:
+    if bool_property is None and kw_property is None:
         raise ValueError()
     if bool_property is not None:
         return lambda obj: obj.pattern.properties.property_exists(bool_property)
