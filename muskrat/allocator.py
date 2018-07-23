@@ -192,7 +192,7 @@ class Allocator:
             self.parser.append(left_object)
         else:
             mrg = merge_policies(
-                focused_prev.pattern.accept_policy.get_policy(parts[0]),
+                focused_prev.pattern.accept_policy.get_policy(left_object),
                 parts[0].tracker.pattern.attach_policy.get_policy(focused_prev)
             )
             if mrg.connect or mrg.insert:
