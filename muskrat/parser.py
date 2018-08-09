@@ -34,7 +34,7 @@ class Parser:
         Method used to acquire certain object from the parser
         :param behind: number of element to select which satisfies the condition
         :type behind: int
-        :param condition: object-cheking condition if the form of function
+        :param condition: object-checking condition if the form of function
         :rtype: ParsingObject
         """
         if self.depth_limit and behind > self.depth_limit:
