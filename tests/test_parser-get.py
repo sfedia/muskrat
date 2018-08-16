@@ -111,6 +111,9 @@ class DTypeTr(Tracker):
         return True
 
 
+res_main = []
+res_negative = []
+
 def test_main():
     hierarchy_string = "A>B>C>D"
     parser = Parser()
@@ -118,11 +121,10 @@ def test_main():
     allocator.start()
 
     tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
-    res = []
 
     def add_to_buffer(message):
-        global res
-        res.append(message)
+        global res_main
+        res_main.append(message)
 
     tree.print = add_to_buffer
     tree.build()
@@ -135,7 +137,7 @@ def test_main():
           <Transition> = ">"
           <D> = "D"'''
 
-    assert "\n".join(res) == sample
+    assert "\n".join(res_main) == sample
 
 
 def test_negative():
@@ -145,11 +147,11 @@ def test_negative():
     allocator.start()
 
     tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
-    res = []
+    res_negative = []
 
     def add_to_buffer(message):
-        global res
-        res.append(message)
+        global res_negative
+        res_negative.append(message)
 
     tree.print = add_to_buffer
     tree.build()
@@ -162,4 +164,4 @@ def test_negative():
       <Transition> = ">"
       <D> = "D"'''
 
-    assert "\n".join(res) != sample
+    assert "\n".join(res_negative) != sample
