@@ -132,6 +132,10 @@ def test_main():
 
     sample1 = open("./tests/pg1_result1.txt", "r", encoding="utf-8").read()
 
+    with open("./tests/abcd.txt", "w", encoding="utf-8") as abcd:
+        abcd.write("\n".join(res_main))
+        abcd.close()
+
     assert "\n".join(res_main) == sample1
 
 
