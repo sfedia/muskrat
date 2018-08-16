@@ -1,0 +1,7 @@
+<A> = "A"
+  <Transition> = ">"
+  <B> = "B"
+    <Transition> = ">"
+    <C> = "C"
+      <Transition> = ">"
+      <D> = "D"

@@ -114,6 +114,7 @@ class DTypeTr(Tracker):
 res_main = []
 res_negative = []
 
+
 def test_main():
     hierarchy_string = "A>B>C>D"
     parser = Parser()
@@ -129,15 +130,9 @@ def test_main():
     tree.print = add_to_buffer
     tree.build()
 
-    sample = '''<A> = "A"
-      <Transition> = ">"
-      <B> = "B"
-        <Transition> = ">"
-        <C> = "C"
-          <Transition> = ">"
-          <D> = "D"'''
+    sample1 = open("pg1_result1.txt", "r", encoding="utf-8").read()
 
-    assert "\n".join(res_main) == sample
+    assert "\n".join(res_negative) != sample1
 
 
 def test_negative():
@@ -156,12 +151,6 @@ def test_negative():
     tree.print = add_to_buffer
     tree.build()
 
-    sample = '''<A> = "A"
-      <Transition> = ">"
-      <B> = "B"
-        <Transition> = ">"
-    <C> = "C"
-      <Transition> = ">"
-      <D> = "D"'''
+    sample2 = open("pg1_result2.txt", "r", encoding="utf-8").read()
 
-    assert "\n".join(res_negative) != sample
+    assert "\n".join(res_negative) != sample2
