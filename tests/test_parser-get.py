@@ -132,7 +132,7 @@ def test_main():
 
     sample1 = open("pg1_result1.txt", "r", encoding="utf-8").read()
 
-    assert "\n".join(res_negative) != sample1
+    assert "\n".join(res_main) == sample1
 
 
 def test_negative():
