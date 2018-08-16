@@ -116,49 +116,26 @@ def test_main():
     parser = Parser()
     allocator = Allocator(hierarchy_string, muskrat.allocator.WhitespaceVoid(), parser)
     allocator.start()
-    assert scan_row(
-        parser.objects,
-        [
-            object_model(
-                type="A",
-                content="A",
-                connected=[
-                    object_model(
-                        type="Transition",
-                        content=">",
-                        connected=[]
-                    ),
-                    object_model(
-                        type="B",
-                        content="B",
-                        connected=[
-                            object_model(
-                                type="Transition",
-                                content=">",
-                                connected=[]
-                            ),
-                            object_model(
-                                type="C",
-                                content="C",
-                                connected=[
-                                    object_model(
-                                        type="Transition",
-                                        content=">",
-                                        connected=[]
-                                    ),
-                                    object_model(
-                                        type="D",
-                                        content="D",
-                                        connected=[]
-                                    )
-                                ]
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
-    )
+
+    tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
+    res = []
+
+    def add_to_buffer(message):
+        global res
+        res.append(message)
+
+    tree.print = add_to_buffer
+    tree.build()
+
+    sample = '''<A> = "A"
+      <Transition> = ">"
+      <B> = "B"
+        <Transition> = ">"
+        <C> = "C"
+          <Transition> = ">"
+          <D> = "D"'''
+
+    assert "\n".join(res) == sample
 
 
 def test_negative():
@@ -166,46 +143,23 @@ def test_negative():
     parser = Parser()
     allocator = Allocator(hierarchy_string, muskrat.allocator.WhitespaceVoid(), parser)
     allocator.start()
-    assert not scan_row(
-        parser.objects,
-        [
-            object_model(
-                type="A",
-                content="A",
-                connected=[
-                    object_model(
-                        type="Transition",
-                        content=">",
-                        connected=[]
-                    ),
-                    object_model(
-                        type="B",
-                        content="B",
-                        connected=[
-                            object_model(
-                                type="Transition",
-                                content=">",
-                                connected=[]
-                            )
-                        ]
-                    ),
-                    object_model(
-                        type="C",
-                        content="C",
-                        connected=[
-                            object_model(
-                                type="Transition",
-                                content=">",
-                                connected=[]
-                            ),
-                            object_model(
-                                type="D",
-                                content="D",
-                                connected=[]
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
-    )
+
+    tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
+    res = []
+
+    def add_to_buffer(message):
+        global res
+        res.append(message)
+
+    tree.print = add_to_buffer
+    tree.build()
+
+    sample = '''<A> = "A"
+      <Transition> = ">"
+      <B> = "B"
+        <Transition> = ">"
+    <C> = "C"
+      <Transition> = ">"
+      <D> = "D"'''
+
+    assert "\n".join(res) != sample
