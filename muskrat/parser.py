@@ -99,15 +99,15 @@ class ParsingObject:
         :rtype: (ParsingObject, int)
         """
         for obj in reversed(self.connected_objects):
+            found_child, counter = obj.dive(counter, condition)
+            if found_child is not None:
+                return found_child, counter
             if condition(obj):
                 counter -= 1
             if counter < 0:
                 break
             elif not counter:
                 return obj, 0
-            found_child, counter = obj.dive(counter, condition)
-            if found_child is not None:
-                return found_child, counter
         return None, counter
 
     def insert_content(self, content2insert, update_function=None):
