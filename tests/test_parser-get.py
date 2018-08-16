@@ -130,7 +130,7 @@ def test_main():
     tree.print = add_to_buffer
     tree.build()
 
-    sample1 = open("pg1_result1.txt", "r", encoding="utf-8").read()
+    sample1 = open("./tests/pg1_result1.txt", "r", encoding="utf-8").read()
 
     assert "\n".join(res_main) == sample1
 
@@ -151,6 +151,6 @@ def test_negative():
     tree.print = add_to_buffer
     tree.build()
 
-    sample2 = open("pg1_result2.txt", "r", encoding="utf-8").read()
+    sample2 = open("./tests/pg1_result2.txt", "r", encoding="utf-8").read()
 
     assert "\n".join(res_negative) != sample2
