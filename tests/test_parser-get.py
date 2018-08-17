@@ -1,6 +1,13 @@
 #!/usr/bin/python3
 
+import importlib
 import muskrat
+import sys
+from muskrat.parser import *
+from muskrat.allocator import *
+from muskrat.connectivity import Accept, Attach
+muskrat = importlib.reload(muskrat)
+importlib.reload(muskrat)
 from muskrat.parser import *
 from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
@@ -131,6 +138,8 @@ def test_main():
     tree.build()
 
     sample1 = open("./tests/pg1_result1.txt", "r", encoding="utf-8").read()
+
+    print("\n".join(res_main))
 
     assert "\n".join(res_main) == sample1
 

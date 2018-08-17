@@ -25,4 +25,4 @@ How to Contribute
 
 [ico-release]: https://img.shields.io/badge/release-1.0.4-yellowgreen.svg
 [ico-license]: https://img.shields.io/badge/license-GPL--3.0-green.svg
-[ico-requirements]: https://img.shields.io/badge/python-%3E%3D3.4-blue.svg
+[ico-requirements]: https://img.shields.io/badge/python-%3E%3D3.5-blue.svg
