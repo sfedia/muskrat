@@ -2,7 +2,6 @@
 
 import importlib
 import muskrat
-import sys
 from muskrat.parser import *
 from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
