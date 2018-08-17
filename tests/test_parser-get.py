@@ -7,12 +7,6 @@ from muskrat.connectivity import Accept, Attach
 
 from . import scan_row, object_model
 
-for sc in Pattern.__subclasses__():
-    exec('del %s' % sc.__name__)
-
-for sc in Tracker.__subclasses__():
-    exec('del %s' % sc.__name__)
-
 
 class Transition(Pattern):
     def __init__(self):
@@ -126,6 +120,7 @@ def test_main():
     parser = Parser()
     allocator = Allocator(hierarchy_string, muskrat.allocator.WhitespaceVoid(), parser)
     allocator.start()
+    finish()
 
     tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
 
@@ -148,6 +143,7 @@ def test_negative():
     parser = Parser()
     allocator = Allocator(hierarchy_string, muskrat.allocator.WhitespaceVoid(), parser)
     allocator.start()
+    finish()
 
     tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
     res_negative = []
@@ -162,3 +158,11 @@ def test_negative():
     sample2 = open("./tests/pg1_result2.txt", "r", encoding="utf-8").read()
 
     assert "\n".join(res_negative) != sample2
+
+
+def finish():
+    for sc in Pattern.__subclasses__():
+        exec('del %s' % sc.__name__)
+
+    for sc in Tracker.__subclasses__():
+        exec('del %s' % sc.__name__)

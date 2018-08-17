@@ -8,12 +8,6 @@ from muskrat.connectivity import Accept, Attach
 
 from . import scan_row, object_model
 
-for sc in Pattern.__subclasses__():
-    exec('del %s' % sc.__name__)
-
-for sc in Tracker.__subclasses__():
-    exec('del %s' % sc.__name__)
-
 
 class Latin(Pattern):
     def __init__(self):
@@ -63,6 +57,7 @@ def test_main():
     text = "lorem1 ipsum2 dolor3 sit4 amet5"
     allocator = Allocator(text, muskrat.allocator.WhitespaceVoid(), parser)
     allocator.start()
+    finish()
     assert scan_row(
         parser.objects,
         [
@@ -123,3 +118,11 @@ def test_main():
             )
         ]
     )
+
+
+def finish():
+    for sc in Pattern.__subclasses__():
+        exec('del %s' % sc.__name__)
+
+    for sc in Tracker.__subclasses__():
+        exec('del %s' % sc.__name__)
