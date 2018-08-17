@@ -125,10 +125,10 @@ def finish():
         try:
             exec('del %s' % sc.__name__)
         except NameError:
-            pass
+            print("Could not del '%s'" % sc.__name__)
 
     for sc in Tracker.__subclasses__():
         try:
             exec('del %s' % sc.__name__)
         except NameError:
-            pass
+            print("Could not del '%s'" % sc.__name__)
