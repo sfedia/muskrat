@@ -2,10 +2,14 @@
 
 import importlib
 import muskrat
+import sys
 from muskrat.parser import *
 from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
-importlib.reload(muskrat)
+if sys.version_info.minor != 5:
+    importlib.reload(muskrat)
+else:
+    muskrat = importlib.reload(muskrat)
 from muskrat.parser import *
 from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
