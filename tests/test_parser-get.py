@@ -1,13 +1,11 @@
 #!/usr/bin/python3
 
+import importlib
 import muskrat
-import sys
-if sys.version_info.minor <= 5 and sys.version_info.releaselevel == 'final':
-    import imp
-    imp.reload(muskrat)
-else:
-    import importlib
-    importlib.reload(muskrat)
+from muskrat.parser import *
+from muskrat.allocator import *
+from muskrat.connectivity import Accept, Attach
+importlib.reload(muskrat)
 from muskrat.parser import *
 from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
