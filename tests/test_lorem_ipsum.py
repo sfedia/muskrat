@@ -8,6 +8,12 @@ from muskrat.connectivity import Accept, Attach
 
 from . import scan_row, object_model
 
+for sc in Pattern.__subclasses__():
+    exec('del %s' % sc.__name__)
+
+for sc in Tracker.__subclasses__():
+    exec('del %s' % sc.__name__)
+
 
 class Latin(Pattern):
     def __init__(self):
