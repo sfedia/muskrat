@@ -9,55 +9,50 @@ from muskrat.connectivity import Accept, Attach
 from . import scan_row, object_model
 
 
-class Latin(Pattern):
-    def __init__(self):
-        Pattern.__init__(
-            self,
-            "Latin",
-            Accept().add_default(connect=True, insert=False),
-            Attach().add_default(connect=False, insert=False)
-        )
-
-
-class LatinTr(Tracker):
-    def __init__(self, *args):
-        Tracker.__init__(self, *args)
-        self.pattern = Latin()
-        self.extractor = RegexString('[A-Za-z]+')
-
-    def track(self):
-        return True
-
-
-class Digit(Pattern):
-    def __init__(self):
-        Pattern.__init__(
-            self,
-            "Digit",
-            Accept().add_default(connect=False, insert=False),
-            Attach().add_option(muskrat.filters.by_type("Latin"), connect=True, insert=False)
-        )
-
-
-class DigitTr(Tracker):
-    def __init__(self, *args):
-        Tracker.__init__(self, *args)
-        self.pattern = Digit()
-        self.extractor = RegexString(r'\d+')
-
-    def track(self):
-        try:
-            return self.parser.get(1).pattern.object_type == "Latin"
-        except AttributeError:
-            return False
-
-
 def test_main():
+    class Latin(Pattern):
+        def __init__(self):
+            Pattern.__init__(
+                self,
+                "Latin",
+                Accept().add_default(connect=True, insert=False),
+                Attach().add_default(connect=False, insert=False)
+            )
+
+    class LatinTr(Tracker):
+        def __init__(self, *args):
+            Tracker.__init__(self, *args)
+            self.pattern = Latin()
+            self.extractor = RegexString('[A-Za-z]+')
+
+        def track(self):
+            return True
+
+    class Digit(Pattern):
+        def __init__(self):
+            Pattern.__init__(
+                self,
+                "Digit",
+                Accept().add_default(connect=False, insert=False),
+                Attach().add_option(muskrat.filters.by_type("Latin"), connect=True, insert=False)
+            )
+
+    class DigitTr(Tracker):
+        def __init__(self, *args):
+            Tracker.__init__(self, *args)
+            self.pattern = Digit()
+            self.extractor = RegexString(r'\d+')
+
+        def track(self):
+            try:
+                return self.parser.get(1).pattern.object_type == "Latin"
+            except AttributeError:
+                return False
+
     parser = Parser()
     text = "lorem1 ipsum2 dolor3 sit4 amet5"
     allocator = Allocator(text, muskrat.allocator.WhitespaceVoid(), parser)
     allocator.start()
-    finish()
     assert scan_row(
         parser.objects,
         [
@@ -118,17 +113,3 @@ def test_main():
             )
         ]
     )
-
-
-def finish():
-    for sc in Pattern.__subclasses__():
-        try:
-            exec('del %s' % sc.__name__)
-        except NameError:
-            print("Could not del '%s'" % sc.__name__)
-
-    for sc in Tracker.__subclasses__():
-        try:
-            exec('del %s' % sc.__name__)
-        except NameError:
-            print("Could not del '%s'" % sc.__name__)
