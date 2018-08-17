@@ -162,7 +162,13 @@ def test_negative():
 
 def finish():
     for sc in Pattern.__subclasses__():
-        exec('del %s' % sc.__name__)
+        try:
+            exec('del %s' % sc.__name__)
+        except NameError:
+            pass
 
     for sc in Tracker.__subclasses__():
-        exec('del %s' % sc.__name__)
+        try:
+            exec('del %s' % sc.__name__)
+        except NameError:
+            pass
