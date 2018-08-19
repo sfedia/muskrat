@@ -27,9 +27,9 @@ class TXTTree:
     def print_row(self, row, indent):
         for obj in row:
             self.print(" " * indent + '<%s> = "%s"' % (obj.pattern.object_type, obj.content,))
-            for (prop, value) in obj.pattern.properties.dict_properties(None):
+            for (prop, value) in obj.pattern.properties.dict_properties(None).items():
                 prop_msg = " " * indent + "- " + prop
-                if value is not None:
+                if value:
                     prop_msg += ": " + '"%s"' % value
                 self.print(prop_msg)
             self.print_row(obj.connected_objects, indent + self.indent)
