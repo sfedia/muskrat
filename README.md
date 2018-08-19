@@ -1,7 +1,7 @@
 Muskrat: minimalistic non-BNF text parser and tree generator
 =========================
 
-[![Software license][ico-license]](LICENSE) ![Software release][ico-release] ![Software requirements][ico-requirements]
+[![Software license][ico-license]](LICENSE) ![Software release][ico-release] ![Software requirements][ico-requirements] ![Build status][ico-travis]
 
 Installation
 ============
@@ -26,3 +26,4 @@ How to Contribute
 [ico-release]: https://img.shields.io/badge/release-1.0.5-green.svg
 [ico-license]: https://img.shields.io/badge/license-GPL--3.0-green.svg
 [ico-requirements]: https://img.shields.io/badge/python-%3E%3D3.5-blue.svg
+[ico-travis]: https://travis-ci.com/prodotiscus/muskrat.svg?branch=master
