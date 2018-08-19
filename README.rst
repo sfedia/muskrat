@@ -1,7 +1,7 @@
 Muskrat: minimalistic non-BNF text parser and tree generator
 =========================
 
-.. image:: https://img.shields.io/badge/release-1.0.5-green.svg
+.. image:: https://img.shields.io/badge/release-1.0.6-green.svg
     :target: https://pypi.org/project/muskrat/
 
 .. image:: https://img.shields.io/badge/license-GPL--3.0-green.svg
