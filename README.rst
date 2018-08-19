@@ -28,5 +28,6 @@ How to Contribute
 -----------------
 
 #. Check for open issues or open a new issue to start a discussion.
-#. Fork `the repository`_ on GitHub to start making your changes to the **master** branch (or branch off of it).
-#. Write a test which shows that the bug was fixed or that the feature works as expected.
+#. Contribute to creating and improving the full documentation.
+#. Create new tests in Travis to look for bugs in published and upcoming releases.
+#. Provide confident support of older versions of Python **3.x** and **2.7**.
