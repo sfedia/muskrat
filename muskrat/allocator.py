@@ -295,6 +295,35 @@ class Extractor:
         self.value = value
 
 
+class TrackerBox:
+    def __init__(self, target_group, placing, positive=True):
+        self.target_group = target_group
+        self.placing = placing
+        self.__positive = positive
+
+    def negative(self):
+        self.__positive = False
+        return self
+
+    def positive(self):
+        self.__positive = True
+        return self
+
+    def add_or_statement(self, ptn):
+        self.target_group.append(ptn)
+        return self
+
+    def check_list(self, tracker_list):
+        for tr in tracker_list:
+            if tr.pattern.object_type in self.target_group:
+                return self.__positive
+
+    def check_target(self, parts):
+        return self.check_list([part.tracker for part in parts])
+
+
+
+
 class CharSequenceString(Extractor):
     def __init__(self, value):
         Extractor.__init__(self, value)
