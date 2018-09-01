@@ -74,10 +74,10 @@ class AlphanumericTr(Tracker):
         return True
 
 
-res_first = []
+res_main = []
 
 
-def test_first():
+def test_main():
     parser = Parser()
     allocator = Allocator("a1b2c3d4ef", muskrat.allocator.WhitespaceVoid(), parser)
 
@@ -89,14 +89,14 @@ def test_first():
     tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
 
     def add_to_buffer(message):
-        global res_first
-        res_first.append(message)
+        global res_main
+        res_main.append(message)
 
     tree.print = add_to_buffer
     tree.build()
 
     sample1 = open("./tests/tb1_result1.txt", "r", encoding="utf-8").read()
 
-    print("\n".join(res_first))
+    print("\n".join(res_main))
 
-    assert "\n".join(res_first) == sample1
+    assert "\n".join(res_main) == sample1
