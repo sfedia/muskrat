@@ -43,6 +43,7 @@ class Allocator:
         self.carriage_equivalent = ""
         self.end_position = None
         self.greedy = True
+        self.tracker_boxes = []
         self.parallel_moving = False
         self.framing_group = None
         self.framing_substrings = []
@@ -183,7 +184,12 @@ class Allocator:
         if self.parallel_moving:
             raise VersionOutOfDate(feature_coming)
 
-        parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
+        for tb in self.tracker_boxes:
+            if tb.check_target(parts):
+                parts = tb.sort_parts(parts, self.greedy)
+                break
+        if not self.tracker_boxes:
+            parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
         left, right = parts[0].pair
         left_object = ParsingObject(left, parts[0].tracker.pattern)
         focused_prev = parts[0].tracker.pattern.focus_on(self.parser, left)
@@ -293,6 +299,58 @@ class Extractor:
     """Native templates which simplify char-sequence matching"""
     def __init__(self, value):
         self.value = value
+
+
+class TrackerBox:
+    def __init__(self, target_group, placing, positive=True):
+        self.target_group = target_group
+        self.placing = placing
+        self.__positive = positive
+        self.greedy = False
+        self.pl_values = []
+
+    def negative(self):
+        self.__positive = False
+        return self
+
+    def positive(self):
+        self.__positive = True
+        return self
+
+    def add_or_statement(self, ptn):
+        self.target_group.append(ptn)
+        return self
+
+    def check_list(self, tracker_list):
+        for tr in tracker_list:
+            if tr.pattern.object_type in self.target_group:
+                return self.__positive
+        return not self.__positive
+
+    def check_target(self, parts):
+        return self.check_list([part.tracker for part in parts])
+
+    def placing_reverse(self):
+        self.pl_values = list(self.placing.values())
+        self.pl_values = sorted(self.pl_values)
+        pl_reversed = sorted(self.pl_values, reverse=True)
+        for (pt, index) in self.placing.items():
+            self.placing[pt] = pl_reversed[self.pl_values.index(index)]
+
+    def placing_index(self, object_type):
+        if object_type in self.placing:
+            return self.placing[object_type]
+        else:
+            return (self.pl_values[-1] + 1) if not self.greedy else (self.pl_values[0] - 1)
+
+    def sort_parts(self, parts, greedy):
+        self.greedy = greedy
+        if greedy:
+            self.placing_reverse()
+        return sorted(
+            parts, key=lambda x: (self.placing_index(x.tracker.pattern.object_type), len(x.pair[0])),
+            reverse=self.greedy
+        )
 
 
 class CharSequenceString(Extractor):
