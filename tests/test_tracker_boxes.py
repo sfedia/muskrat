@@ -11,7 +11,7 @@ from muskrat.parser import *
 from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
 
-#from . import scan_row, object_model
+from . import scan_row, object_model
 
 
 class Alpha(Pattern):
