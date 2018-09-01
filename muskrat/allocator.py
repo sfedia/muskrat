@@ -317,11 +317,10 @@ class TrackerBox:
         for tr in tracker_list:
             if tr.pattern.object_type in self.target_group:
                 return self.__positive
+        return not self.__positive
 
     def check_target(self, parts):
         return self.check_list([part.tracker for part in parts])
-
-
 
 
 class CharSequenceString(Extractor):
