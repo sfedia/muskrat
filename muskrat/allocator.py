@@ -43,6 +43,7 @@ class Allocator:
         self.carriage_equivalent = ""
         self.end_position = None
         self.greedy = True
+        self.tracker_boxes = []
         self.parallel_moving = False
         self.framing_group = None
         self.framing_substrings = []
@@ -183,7 +184,12 @@ class Allocator:
         if self.parallel_moving:
             raise VersionOutOfDate(feature_coming)
 
-        parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
+        for tb in self.tracker_boxes:
+            if tb.check_target(parts):
+                parts = tb.sort_parts(parts, self.greedy)
+                break
+        if not self.tracker_boxes:
+            parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
         left, right = parts[0].pair
         left_object = ParsingObject(left, parts[0].tracker.pattern)
         focused_prev = parts[0].tracker.pattern.focus_on(self.parser, left)
