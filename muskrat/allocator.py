@@ -300,6 +300,8 @@ class TrackerBox:
         self.target_group = target_group
         self.placing = placing
         self.__positive = positive
+        self.greedy = False
+        self.pl_values = []
 
     def negative(self):
         self.__positive = False
@@ -321,6 +323,28 @@ class TrackerBox:
 
     def check_target(self, parts):
         return self.check_list([part.tracker for part in parts])
+
+    def placing_reverse(self):
+        self.pl_values = list(self.placing.values())
+        self.pl_values = sorted(self.pl_values)
+        pl_reversed = sorted(self.pl_values, reverse=True)
+        for (pt, index) in self.placing.items():
+            self.placing[pt] = pl_reversed[self.pl_values.index(index)]
+
+    def placing_index(self, object_type):
+        if object_type in self.placing:
+            return self.placing[object_type]
+        else:
+            return (self.pl_values[-1] + 1) if not self.greedy else (self.pl_values[0] - 1)
+
+    def sort_parts(self, parts, greedy):
+        self.greedy = greedy
+        if greedy:
+            self.placing_reverse()
+        return sorted(
+            parts, key=lambda x: (self.placing_index(x.tracker.pattern.object_type), len(x.pair[0])),
+            reverse=self.greedy
+        )
 
 
 class CharSequenceString(Extractor):
