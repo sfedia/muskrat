@@ -215,9 +215,14 @@ class Allocator:
                         if not parts[0].tracker.pattern.insertion_prepend_value:
                             focused_prev.insert_content(left)
                         else:
-                            focused_prev.insert_content(parts[0].tracker.pattern.prepended_value + left)
-                        for ins_hook in parts[0].tracker.insertion_hooks:
-                            ins_hook(parts[0].tracker.parser, parts[0].tracker.allocator, left)
+                            focused_prev.insert_content(
+                                parts[0].tracker.insertion_hook(
+                                    left,
+                                    parts[0].tracker.pattern.prepended_value,
+                                    parts[0].tracker.parser,
+                                    parts[0].tracker.allocator
+                                )
+                            )
             else:
                 self.parser.append(left_object)
 
