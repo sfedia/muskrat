@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="muskrat",
-    version="1.0.8",
+    version="1.0.9",
     author="Fyodor Sizov",
     author_email="f.sizov@yandex.ru",
     description="Minimalistic non-BNF text parser",
