@@ -141,24 +141,3 @@ def test_main():
     print("\n".join(res_main_pg))
 
     assert "\n".join(res_main_pg) == sample1
-
-
-def test_negative():
-    hierarchy_string = "A>B>C>D"
-    parser = Parser()
-    allocator = Allocator(hierarchy_string, muskrat.allocator.WhitespaceVoid(), parser)
-    allocator.start()
-
-    tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
-    res_negative = []
-
-    def add_to_buffer(message):
-        global res_negative
-        res_negative.append(message)
-
-    tree.print = add_to_buffer
-    tree.build()
-
-    sample2 = open("./tests/pg1_result2.txt", "r", encoding="utf-8").read()
-
-    assert "\n".join(res_negative) != sample2
