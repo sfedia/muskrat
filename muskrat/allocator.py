@@ -218,6 +218,7 @@ class Allocator:
                             focused_prev.insert_content(
                                 parts[0].tracker.insertion_hook(
                                     left,
+                                    focused_prev,
                                     parts[0].tracker.pattern.prepended_value,
                                     parts[0].tracker.parser,
                                     parts[0].tracker.allocator

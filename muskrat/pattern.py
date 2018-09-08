@@ -133,7 +133,7 @@ class Tracker:
         self._pattern = None
         self._extractor = None
         self.connection_hooks = []
-        self.insertion_hook = lambda left, pv, p, a: pv + left
+        self.insertion_hook = lambda left, fe, pv, p, a: pv + left
         self.takes_all = False
 
     def track(self):
