@@ -58,6 +58,9 @@ class DigitTr(Tracker):
             return False
 
 
+res_main = []
+
+
 def test_main():
     parser = Parser()
     text = "lorem1 ipsum2 dolor3 sit4 amet5"
@@ -65,8 +68,6 @@ def test_main():
     allocator.start()
 
     tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
-
-    res_main = []
 
     def add_to_buffer(message):
         global res_main
