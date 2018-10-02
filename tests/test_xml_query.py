@@ -11,11 +11,9 @@ importlib.reload(muskrat)
 from muskrat.parser import *
 from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
+from muskrat.xml_generator import *
 
-#from . import scan_row, object_model
-
-
-test_string = "a[b?,c?[u, q?[l, j?, t?], k]"
+from . import scan_row, object_model
 
 
 class DescBracket(Pattern):
@@ -113,7 +111,9 @@ class Element(Pattern):
             "Element",
             Accept().add_default(connect=True, insert=False),
             Attach().add_default(connect=True, insert=False),
-            focus_on=lambda p, c: p.get(condition=lambda o: "Element" in o.pattern.object_type)
+            focus_on=lambda p, c: p.get(
+                condition=lambda o: "Element" in o.pattern.object_type and o.pattern.properties.property_exists("parent")
+            )
         )
 
 
@@ -127,9 +127,12 @@ class ElementTr(Tracker):
         return True
 
 
-parser = Parser()
-allocator = Allocator(test_string, muskrat.allocator.WhitespaceVoid(), parser)
-allocator.start()
+def test_global_search():
+    parser = Parser()
+    allocator = Allocator("a[b?,c?[u, q?[l, j?, t?]]", muskrat.allocator.WhitespaceVoid(), parser)
 
-tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
-tree.build()
+    allocator.start()
+
+    po = XMLQuery(parser.objects)
+
+    assert [e.get('content') for e in po.root.xpath("//*/object[@type='ElementQ']")] == ['b?', 'c?', 'q?', 'j?', 't?']
