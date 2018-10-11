@@ -114,11 +114,15 @@ class DiveIterator:
         self.current_object = 0
         self.counter = 0
         self.this = None
+        self.is_selected = False
+        self.object_wrapper = namedtuple('ObjectWrapper', 'selected obj')
 
     def __next__(self):
         if self.current_object == len(self.objects):
             raise StopIteration
 
+        self.is_selected = False
+        self.counter += 1
         child_di = DiveIterator(
             self.objects[self.current_object].connected_objects,
             self.behind,
@@ -129,21 +133,22 @@ class DiveIterator:
         for o in child_di:
             pass
 
-        if not child_di.behind:
-            return child_di.this
-        else:
-            self.behind = child_di.behind
-
         self.counter += child_di.counter
+        self.behind = child_di.behind
 
-        if self.depth_limit is not None and self.depth_limit >= self.counter:
+        if child_di.this:
+            self.this = child_di.this
+        elif self.depth_limit is not None and self.counter < self.depth_limit or self.counter:
+            if self.condition(self.objects[self.current_object]):
+                if self.behind == 1:
+                    self.this = self.objects[self.current_object]
+                elif self.behind > 1:
+                    self.is_selected = True
+                    self.behind -= 1
+
+        if self.this:
             raise StopIteration
 
-        if self.condition(self.objects[self.current_object]):
-            if child_di.behind == 1:
-                return self.objects[self.current_object]
-            else:
-                self.behind -= 1
-                self.this = self.objects[self.current_object]
-
         self.current_object += 1
+
+        return self.object_wrapper(self.is_selected, self.objects[self.current_object - 1])
