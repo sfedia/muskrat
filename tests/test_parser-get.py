@@ -7,6 +7,7 @@ from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
 muskrat = importlib.reload(muskrat)
 importlib.reload(muskrat)
+import muskrat
 from muskrat.parser import *
 from muskrat.allocator import *
 from muskrat.connectivity import Accept, Attach
