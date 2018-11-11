@@ -26,7 +26,7 @@ author = 'Fyodor Sizov'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.1.0-alpha'
+release = '1.0.11'
 
 
 # -- General configuration ---------------------------------------------------
