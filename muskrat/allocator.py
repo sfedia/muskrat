@@ -109,6 +109,9 @@ class Allocator:
                 self.text[n:n+self.splitter.value] for n in range(0, len(self.text), self.splitter.value)
             ]
 
+        elif isinstance(self.splitter, NullVoid):
+            self.units = [self.text]
+
         if self.end_position and len(self.units) > 1:
             del self.units[-1]
 
@@ -279,6 +282,9 @@ class Allocator:
             if not left:
                 left = None
 
+        elif isinstance(extractor, NullVoid):
+            left = None
+
         if left is None or right is None:
             raise ExtractionFailed()
         else:
@@ -392,6 +398,11 @@ class LimitRegexString(Extractor):
 class LengthInteger(Extractor):
     def __init__(self, value):
         Extractor.__init__(self, value)
+
+
+class NullVoid(Extractor):
+    def __init__(self):
+        Extractor.__init__(self, None)
 
 
 class AlreadyAllocated(Exception):
