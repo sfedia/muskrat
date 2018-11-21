@@ -95,6 +95,9 @@ class Allocator:
         elif isinstance(self.splitter, RegexString):
             self.units = re.split(self.splitter.value, self.text)
 
+        elif isinstance(self.splitter, RegexCompiledString):
+            self.units = re.compile(*self.splitter.value).split(self.text)
+
         elif isinstance(self.splitter, LimitRegexString):
             self.units = [x.group(0) for x in re.finditer(self.splitter.value, self.text)]
 
@@ -108,6 +111,9 @@ class Allocator:
             self.units = [
                 self.text[n:n+self.splitter.value] for n in range(0, len(self.text), self.splitter.value)
             ]
+
+        elif isinstance(self.splitter, NullVoid):
+            self.units = [self.text]
 
         if self.end_position and len(self.units) > 1:
             del self.units[-1]
@@ -240,13 +246,25 @@ class Allocator:
             left = extractor.value
             right = unit_string[len(extractor.value):]
 
+        elif isinstance(extractor, CharSequenceCaseIString):
+            if unit_string.lower().startswith(extractor.value.lower()):
+                left = unit_string[:len(extractor.value)]
+                right = unit_string[len(extractor.value):]
+            else:
+                left = None
+
         elif isinstance(extractor, WhitespaceVoid) and unit_string.startswith(" "):
             left = re.search(r'^\s+', unit_string)
             right = unit_string.lstrip(" ")
 
-        elif isinstance(extractor, RegexString):
+        elif isinstance(extractor, RegexString) or isinstance(extractor, RegexCompiledString):
+            if isinstance(extractor, RegexCompiledString):
+                extractor.value, *flags = extractor.value
             extractor.value = '^' + extractor.value.lstrip('^')
-            rs = re.search(extractor.value, unit_string)
+            if isinstance(extractor, RegexString):
+                rs = re.search(extractor.value, unit_string)
+            else:
+                rs = re.compile(extractor.value, *flags).search(extractor.value)
             if rs:
                 left = rs.group(0)
                 right = unit_string[len(left):]
@@ -278,6 +296,9 @@ class Allocator:
             right = unit_string[n:]
             if not left:
                 left = None
+
+        elif isinstance(extractor, NullVoid):
+            left = None
 
         if left is None or right is None:
             raise ExtractionFailed()
@@ -364,6 +385,11 @@ class CharSequenceString(Extractor):
         Extractor.__init__(self, value)
 
 
+class CharSequenceCaseIString(Extractor):
+    def __init__(self, value):
+        Extractor.__init__(self, value)
+
+
 class WhitespaceVoid(Extractor):
     def __init__(self):
         Extractor.__init__(self, " ")
@@ -384,6 +410,11 @@ class RegexString(Extractor):
         Extractor.__init__(self, value)
 
 
+class RegexCompiledString(Extractor):
+    def __init__(self, *args):
+        Extractor.__init__(self, args)
+
+
 class LimitRegexString(Extractor):
     def __init__(self, value):
         Extractor.__init__(self, value)
@@ -392,6 +423,11 @@ class LimitRegexString(Extractor):
 class LengthInteger(Extractor):
     def __init__(self, value):
         Extractor.__init__(self, value)
+
+
+class NullVoid(Extractor):
+    def __init__(self):
+        Extractor.__init__(self, None)
 
 
 class AlreadyAllocated(Exception):

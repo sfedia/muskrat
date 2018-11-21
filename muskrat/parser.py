@@ -30,17 +30,21 @@ class Parser:
         self.objects = []
         self.depth_limit = None
 
-    def get(self, behind=1, condition=lambda obj: True):
+    def get(self, behind=1, condition=lambda obj: True, return_dit=False):
         """
         Method used to acquire certain object from the parser
         :param behind: number of element to select which satisfies the condition
         :type behind: int
         :param condition: object-checking condition if the form of function
+        :param return_dit: parameter which determines if the whole 'dit' should be returned
         :rtype: ParsingObject
         """
         dit = DiveIterator(self.objects, behind, condition, self.depth_limit)
         for fg_child in dit:
             pass
+
+        if return_dit:
+            return dit
 
         return dit.this if dit.this else None
 
@@ -84,10 +88,13 @@ class ParsingObject:
         """
         self.connected_objects.append(object2connect)
 
-    def dive(self, behind=1, condition=lambda obj: True, depth_limit=None):
+    def dive(self, behind=1, condition=lambda obj: True, depth_limit=None, return_dit=False):
         dit = DiveIterator(self.connected_objects, behind, condition, depth_limit)
         for fg_child in dit:
             pass
+
+        if return_dit:
+            return dit
 
         return dit.this if dit.this else None
 

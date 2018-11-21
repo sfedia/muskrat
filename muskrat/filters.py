@@ -89,18 +89,17 @@ def has_childs():
 def connection_depth(value=None, compare=None):
     """
     Generates a function which compares connection depth of the element with the given value.
-    :param value: value to compare to produce equality expression
-    :param compare: expression (function) which takes depth as argument and returns boolean
+    :param value: value to compare with measured connection depth
+    :param compare: expr. (function) which takes depth as argument, returns bool
     :return: function (function wrapper)
     """
     if value is None and compare is None:
         raise ValueError()
 
     def get_depth(obj):
-        last, counter = obj.dive(counter=defaults.max_connection_depth)
-        depth = defaults.max_connection_depth - counter
+        dive_dit = obj.dive(behind=defaults.max_connection_depth, return_dit=True)
         if compare is None:
-            return depth == value
+            return dive_dit.counter == value
         else:
-            return compare(depth)
+            return compare(dive_dit.counter)
     return get_depth
