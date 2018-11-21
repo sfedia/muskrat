@@ -246,6 +246,13 @@ class Allocator:
             left = extractor.value
             right = unit_string[len(extractor.value):]
 
+        elif isinstance(extractor, CharSequenceCaseIString):
+            if unit_string.lower().startswith(extractor.value.lower()):
+                left = unit_string[:len(extractor.value)]
+                right = unit_string[len(extractor.value):]
+            else:
+                left = None
+
         elif isinstance(extractor, WhitespaceVoid) and unit_string.startswith(" "):
             left = re.search(r'^\s+', unit_string)
             right = unit_string.lstrip(" ")
@@ -374,6 +381,11 @@ class TrackerBox:
 
 
 class CharSequenceString(Extractor):
+    def __init__(self, value):
+        Extractor.__init__(self, value)
+
+
+class CharSequenceCaseIString(Extractor):
     def __init__(self, value):
         Extractor.__init__(self, value)
 
