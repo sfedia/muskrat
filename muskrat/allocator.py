@@ -298,7 +298,8 @@ class Allocator:
                 left = None
 
         elif isinstance(extractor, NullVoid):
-            left = None
+            left = ""
+            right = ""
 
         if left is None or right is None:
             raise ExtractionFailed()
