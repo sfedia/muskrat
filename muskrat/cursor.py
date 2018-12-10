@@ -97,6 +97,10 @@ class AllocatorCursor:
     def depend_on(self):
         return self.get_attribute("depend_on")
 
+    @property
+    def greedy(self):
+        return self.get_attribute("greedy")
+
 
 class SliceAttributes:
     def __init__(self, **kwargs):
@@ -104,14 +108,16 @@ class SliceAttributes:
             "methods_priority",
             "tracker_family",
             "left_depth_limit",
-            "depend_on"
+            "depend_on",
+            "greedy"
         ]
 
         attribute_values = (
             dict(connect=0, insert=1, append=2),
             [Tracker],
             None,
-            None
+            None,
+            True
         )
 
         if sys.version_info >= (3, 7):

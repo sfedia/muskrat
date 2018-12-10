@@ -160,10 +160,10 @@ class Allocator:
 
         for tb in self.tracker_boxes:
             if tb.check_target(parts):
-                parts = tb.sort_parts(parts, self.greedy)
+                parts = tb.sort_parts(parts, self.cursor.greedy)
                 break
         if not self.tracker_boxes:
-            parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
+            parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.cursor.greedy)
         left, right = parts[0].pair
         left_object = ParsingObject(left, parts[0].tracker.pattern)
         focused_prev = parts[0].tracker.pattern.focus_on(self.parser, left)
