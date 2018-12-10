@@ -72,7 +72,7 @@ class AllocatorCursor:
 
     def get_attribute(self, attr_name):
         current = self.get_current_cursor()
-        return getattr(current, attr_name)
+        return getattr(current.attributes, attr_name)
 
     @property
     def max_connection_depth(self):
