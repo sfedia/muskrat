@@ -22,6 +22,7 @@ import re
 from random import sample
 from .pattern import *
 from .defaults import *
+from .cursor import *
 from .parser import Parser, ParsingObject
 from .connectivity import *
 
@@ -50,6 +51,7 @@ class Allocator:
         self.parser = parser
         self.units = []
         self.current = position
+        self.cursor = AllocatorCursor(self.current)
         self.splitter = splitter
         if not issubclass(type(self.splitter), Extractor):
             raise ValueError()
@@ -128,19 +130,21 @@ class Allocator:
         return None
 
     def move_right(self):
-
         current = self.units[self.current]
+        self.cursor.update(self.parser, self.current, current)
         trackers = []
+        self.parser.depth_limit = self.cursor.left_depth_limit
 
-        for tracker in Tracker.__subclasses__():
-            tracking = tracker(self.parser, self)
-            if tracking.track():
-                trackers.append(tracking)
+        for tracker_super in self.cursor.tracker_family:
+            for tracker in tracker_super.__subclasses__():
+                tracking = tracker(self.parser, self)
+                if tracking.track():
+                    trackers.append(tracking)
         if not trackers:
             raise CannotMoveRight("Failed on unit %d = '%s'" % (self.current, current,))
 
         parts = []
-        part_obj = namedtuple('Part', 'tracker pair')
+        part_obj = namedtuple("Part", ["tracker", "pair"])
         for tracker in trackers:
             try:
                 part = part_obj(tracker, self.extract(current, tracker.extractor, tracker.takes_all))
@@ -165,7 +169,12 @@ class Allocator:
         focused_prev = parts[0].tracker.pattern.focus_on(self.parser, left)
 
         if focused_prev is None:
-            self.parser.append(left_object)
+            if not self.cursor.depend_on:
+                self.parser.append(left_object)
+            else:
+                self.cursor.depend_on.connect(left_object)
+                for conn_hook in parts[0].tracker.connection_hooks:
+                    conn_hook(parts[0].tracker.parser, parts[0].tracker.allocator, left)
         else:
             mrg = merge_policies(
                 focused_prev.pattern.accept_policy.get_policy(left_object),
@@ -174,7 +183,7 @@ class Allocator:
             if mrg.connect or mrg.insert:
                 methods = sorted(
                     [m for m in [(mrg.connect, 'connect'), (mrg.insert, 'insert')] if m[0]],
-                    key=lambda m: defaults.methods_priority[m[1]]
+                    key=lambda m: self.cursor.methods_priority[m[1]]
                 )
                 for m in methods:
                     if m[1] == "connect":
@@ -195,7 +204,12 @@ class Allocator:
                                 )
                             )
             else:
-                self.parser.append(left_object)
+                if not self.cursor.depend_on:
+                    self.parser.append(left_object)
+                else:
+                    self.cursor.depend_on.connect(left_object)
+                    for conn_hook in parts[0].tracker.connection_hooks:
+                        conn_hook(parts[0].tracker.parser, parts[0].tracker.allocator, left)
 
         self.current += 1
         if right:
