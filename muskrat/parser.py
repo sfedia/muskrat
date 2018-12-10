@@ -123,7 +123,7 @@ class DiveIterator:
         self.counter = 0
         self.this = None
         self.is_selected = False
-        self.object_wrapper = namedtuple('ObjectWrapper', 'selected obj')
+        self.object_wrapper = namedtuple("ObjectWrapper", ["selected", "obj"])
 
     def __next__(self):
         if self.current_object == len(self.objects):
