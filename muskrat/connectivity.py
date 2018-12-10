@@ -23,7 +23,7 @@ from .defaults import *
 from .filters import unify
 from .parser import ParsingObject
 
-allowed_opts = namedtuple('AllowedOptions', 'connect insert')
+allowed_opts = namedtuple("AllowedOptions", ["connect", "insert"])
 
 
 class RelativePolicy:
