@@ -49,6 +49,7 @@ class Allocator:
         self.__char_equivalents = {}
         self.text = text
         self.parser = parser
+        self.parser_add_boxes()
         self.units = []
         self.current = position
         self.cursor = AllocatorCursor(self.current)
@@ -96,6 +97,13 @@ class Allocator:
 
         if self.end_position and len(self.units) > 1:
             del self.units[-1]
+
+    def parser_add_boxes(self):
+        self.parser.BOX0 = ParsingObject(str(), muskrat.pattern.Pattern(
+            "builtin:BOX0",
+            Accept().add_default(connect=True, insert=True),
+            Attach().add_default(connect=False, insert=False)
+        ))
 
     def start_move(self):
         while self.current < len(self.units):

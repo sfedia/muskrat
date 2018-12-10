@@ -18,7 +18,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from .connectivity import *
 import muskrat.pattern
 from collections import namedtuple
 
@@ -30,11 +29,6 @@ class Parser:
     def __init__(self):
         self.objects = []
         self.depth_limit = None
-        self.BOX0 = ParsingObject(str(), muskrat.pattern.Pattern(
-            "builtin:BOX0",
-            Accept().add_default(connect=True, insert=True),
-            Attach().add_default(connect=False, insert=False)
-        ))
 
     def get(self, behind=1, condition=lambda obj: True, return_dit=False):
         """
