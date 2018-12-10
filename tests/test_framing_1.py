@@ -170,8 +170,8 @@ def test_main():
     tree.print = add_to_buffer
     tree.build()
 
-    nv1_sample = open("./tests/fr1_result1.txt", "r", encoding="utf-8").read()
+    fr1_sample = open("./tests/fr1_result1.txt", "r", encoding="utf-8").read()
 
     print("\n".join(res_main))
 
-    assert "\n".join(res_main) == nv1_sample
+    assert "\n".join(res_main) == fr1_sample
