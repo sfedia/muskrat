@@ -45,9 +45,6 @@ class Allocator:
         self.greedy = True
         self.tracker_boxes = []
         self.parallel_moving = False
-        self.framing_group = None
-        self.framing_substrings = []
-        self._framing_start = None
         self.__char_equivalents = {}
         self.text = text
         self.parser = parser
@@ -57,31 +54,11 @@ class Allocator:
         if not issubclass(type(self.splitter), Extractor):
             raise ValueError()
 
-    def get_frs(self):
-        if self._framing_start is None:
-            return None
-
-        if self.current >= self._framing_start:
-            return self._framing_start
-        else:
-            return self.current
-
-    def set_frs(self, value):
-        self._framing_start = value
-
-    framing_start = property(get_frs, set_frs)
-
     def make_units(self):
         if self.units:
             raise AlreadyAllocated()
-
         if self.end_position:
             self.text = self.text[:self.end_position]
-
-        if self.framing_substrings:
-            self.framing_group = self.generate_framing_group()
-            for fs in self.framing_substrings:
-                self.text = self.text.replace(fs, self.framing_group)
 
         self.text = self.text.replace("\n", self.newline_equivalent)
         self.text = self.text.replace("\r", self.carriage_equivalent)
@@ -150,23 +127,10 @@ class Allocator:
                 continue
         return None
 
-    def check_framing(self, index):
-        if self.framing_group and self.framing_group in self.units[index]:
-            left, right = self.units[index].split(self.framing_group)
-            self.units[index] = left
-            self.framing_start = index + 1
-            self.units.insert(index, right)
-            self.check_framing(self.framing_start)
-
     def move_right(self):
-        if self.framing_group:
-            self.check_framing(self.current)
 
         current = self.units[self.current]
         trackers = []
-
-        if self.framing_group:
-            self.parser.depth_limit = self.current - self.framing_start
 
         for tracker in Tracker.__subclasses__():
             tracking = tracker(self.parser, self)
@@ -307,10 +271,6 @@ class Allocator:
             if takes_all and right:
                 raise ExtractionFailed()
             return left, right
-
-    @staticmethod
-    def generate_framing_group():
-        return "".join([chr(x) for x in sample(range(0xe000, 0xf8ff), defaults.framing_group_length)])
 
     def add_char_equivalent(self, char, equivalent):
         """
