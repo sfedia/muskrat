@@ -101,7 +101,6 @@ class AllocatorCursor:
 class SliceAttributes:
     def __init__(self, **kwargs):
         attribute_names = [
-            "max_connection_depth",
             "methods_priority",
             "tracker_family",
             "left_depth_limit",
@@ -109,7 +108,6 @@ class SliceAttributes:
         ]
 
         attribute_values = (
-            sys.getrecursionlimit(),
             dict(connect=0, insert=1, append=2),
             [Tracker],
             None,

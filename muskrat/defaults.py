@@ -48,5 +48,8 @@ def group_filter(group_name):
     return LogicalAND(by_type("Grouping"), by_property(kw_property="name", kw_value=group_name))
 
 
+max_connection_depth = sys.getrecursionlimit()
+
+
 class VersionOutOfDate(Exception):
     pass
