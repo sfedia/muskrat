@@ -36,23 +36,29 @@ class AllocatorCursor:
     def update(self, parser, current, content):
         self.current = current
         if self.dm_stack:
-            if self.dynamic_mappers[self.dm_stack[-1].dm_index].finalize_if(parser, content):
-                if self.dl_stack and self.dl_stack[-1][0] == self.dm_stack[-1].dm_index:
-                    self.dl_stack.pop()
-                self.dm_stack.pop()
+            try:
+                if self.dynamic_mappers[self.dm_stack[-1].dm_index].finalize_if(parser, content):
+                    if self.dl_stack and self.dl_stack[-1][0] == self.dm_stack[-1].dm_index:
+                        self.dl_stack.pop()
+                    self.dm_stack.pop()
+            except AttributeError:
+                pass
 
         for n, dmp in enumerate(self.dynamic_mappers):
-            if dmp.start_if(parser, content):
-                self.dm_stack.append(
-                    self.mapper_compile(
-                        self.compiled_mapper(n, dmp.attributes),
-                        ["depend_on"],
-                        parser,
-                        content
+            try:
+                if dmp.start_if(parser, content):
+                    self.dm_stack.append(
+                        self.mapper_compile(
+                            self.compiled_mapper(n, dmp.attributes),
+                            ["depend_on"],
+                            parser,
+                            content
+                        )
                     )
-                )
-                if "left_depth_limit" in dmp.attributes:
-                    self.dl_stack.append((n, current, dmp.attributes["left_depth_limit"]))
+                    if "left_depth_limit" in dmp.attributes:
+                        self.dl_stack.append((n, current, dmp.attributes["left_depth_limit"]))
+            except AttributeError:
+                pass
 
     @staticmethod
     def mapper_compile(mapper, attrs2compile, *args):
