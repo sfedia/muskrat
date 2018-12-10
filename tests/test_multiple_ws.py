@@ -101,6 +101,3 @@ def test_main():
     print("\n".join(res_main))
 
     assert "\n".join(res_main) == nv1_sample
-
-
-test_main()
