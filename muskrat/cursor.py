@@ -117,9 +117,9 @@ class SliceAttributes:
         )
 
         if sys.version_info >= (3, 7):
-            self.attr_proto = namedtuple('SliceAttributeStorage', attribute_names, defaults=attribute_values)
+            self.attr_proto = namedtuple("SliceAttributeStorage", attribute_names, defaults=attribute_values)
         else:
-            self.attr_proto = namedtuple('SliceAttributeStorage', attribute_names)
+            self.attr_proto = namedtuple("SliceAttributeStorage", attribute_names)
             self.attr_proto.__new__.__defaults__ = attribute_values
 
         self.attributes = self.attr_proto(**kwargs)
