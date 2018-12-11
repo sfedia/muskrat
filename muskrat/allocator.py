@@ -22,13 +22,14 @@ import re
 from random import sample
 from .pattern import *
 from .defaults import *
+from .cursor import *
 from .parser import Parser, ParsingObject
 from .connectivity import *
 
 
 class Allocator:
     """Allocator is used to divide the whole text into units"""
-    def __init__(self, text, splitter, parser, position=0):
+    def __init__(self, text, splitter, parser, position=0, parameters=None):
         """
         Create an allocator instance
         :param text: the whole text
@@ -45,43 +46,22 @@ class Allocator:
         self.greedy = True
         self.tracker_boxes = []
         self.parallel_moving = False
-        self.framing_group = None
-        self.framing_substrings = []
-        self._framing_start = None
         self.__char_equivalents = {}
         self.text = text
         self.parser = parser
+        self.parser_add_boxes()
         self.units = []
         self.current = position
+        self.cursor = AllocatorCursor(self.current, parameters if parameters else {})
         self.splitter = splitter
         if not issubclass(type(self.splitter), Extractor):
             raise ValueError()
 
-    def get_frs(self):
-        if self._framing_start is None:
-            return None
-
-        if self.current >= self._framing_start:
-            return self._framing_start
-        else:
-            return self.current
-
-    def set_frs(self, value):
-        self._framing_start = value
-
-    framing_start = property(get_frs, set_frs)
-
     def make_units(self):
         if self.units:
             raise AlreadyAllocated()
-
         if self.end_position:
             self.text = self.text[:self.end_position]
-
-        if self.framing_substrings:
-            self.framing_group = self.generate_framing_group()
-            for fs in self.framing_substrings:
-                self.text = self.text.replace(fs, self.framing_group)
 
         self.text = self.text.replace("\n", self.newline_equivalent)
         self.text = self.text.replace("\r", self.carriage_equivalent)
@@ -115,8 +95,18 @@ class Allocator:
         elif isinstance(self.splitter, NullVoid):
             self.units = [self.text]
 
+        else:
+            raise SplitterNotSupported
+
         if self.end_position and len(self.units) > 1:
             del self.units[-1]
+
+    def parser_add_boxes(self):
+        self.parser.BOX0 = ParsingObject(str(), muskrat.pattern.Pattern(
+            "builtin:BOX0",
+            Accept().add_default(connect=True, insert=True),
+            Attach().add_default(connect=False, insert=False)
+        ))
 
     def start_move(self):
         while self.current < len(self.units):
@@ -150,33 +140,22 @@ class Allocator:
                 continue
         return None
 
-    def check_framing(self, index):
-        if self.framing_group and self.framing_group in self.units[index]:
-            left, right = self.units[index].split(self.framing_group)
-            self.units[index] = left
-            self.framing_start = index + 1
-            self.units.insert(index, right)
-            self.check_framing(self.framing_start)
-
     def move_right(self):
-        if self.framing_group:
-            self.check_framing(self.current)
-
         current = self.units[self.current]
+        self.cursor.update(self.parser, self.current, current)
         trackers = []
+        self.parser.depth_limit = self.cursor.left_depth_limit
 
-        if self.framing_group:
-            self.parser.depth_limit = self.current - self.framing_start
-
-        for tracker in Tracker.__subclasses__():
-            tracking = tracker(self.parser, self)
-            if tracking.track():
-                trackers.append(tracking)
+        for tracker_super in self.cursor.tracker_family:
+            for tracker in tracker_super.__subclasses__():
+                tracking = tracker(self.parser, self)
+                if tracking.track():
+                    trackers.append(tracking)
         if not trackers:
             raise CannotMoveRight("Failed on unit %d = '%s'" % (self.current, current,))
 
         parts = []
-        part_obj = namedtuple('Part', 'tracker pair')
+        part_obj = namedtuple("Part", ["tracker", "pair"])
         for tracker in trackers:
             try:
                 part = part_obj(tracker, self.extract(current, tracker.extractor, tracker.takes_all))
@@ -192,16 +171,21 @@ class Allocator:
 
         for tb in self.tracker_boxes:
             if tb.check_target(parts):
-                parts = tb.sort_parts(parts, self.greedy)
+                parts = tb.sort_parts(parts, self.cursor.greedy)
                 break
         if not self.tracker_boxes:
-            parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.greedy)
+            parts = sorted(parts, key=lambda x: len(x.pair[0]), reverse=self.cursor.greedy)
         left, right = parts[0].pair
         left_object = ParsingObject(left, parts[0].tracker.pattern)
         focused_prev = parts[0].tracker.pattern.focus_on(self.parser, left)
 
         if focused_prev is None:
-            self.parser.append(left_object)
+            if not self.cursor.depend_on:
+                self.parser.append(left_object)
+            else:
+                self.cursor.depend_on.connect(left_object)
+                for conn_hook in parts[0].tracker.connection_hooks:
+                    conn_hook(parts[0].tracker.parser, parts[0].tracker.allocator, left)
         else:
             mrg = merge_policies(
                 focused_prev.pattern.accept_policy.get_policy(left_object),
@@ -210,7 +194,7 @@ class Allocator:
             if mrg.connect or mrg.insert:
                 methods = sorted(
                     [m for m in [(mrg.connect, 'connect'), (mrg.insert, 'insert')] if m[0]],
-                    key=lambda m: defaults.methods_priority[m[1]]
+                    key=lambda m: self.cursor.methods_priority[m[1]]
                 )
                 for m in methods:
                     if m[1] == "connect":
@@ -231,7 +215,12 @@ class Allocator:
                                 )
                             )
             else:
-                self.parser.append(left_object)
+                if not self.cursor.depend_on:
+                    self.parser.append(left_object)
+                else:
+                    self.cursor.depend_on.connect(left_object)
+                    for conn_hook in parts[0].tracker.connection_hooks:
+                        conn_hook(parts[0].tracker.parser, parts[0].tracker.allocator, left)
 
         self.current += 1
         if right:
@@ -297,8 +286,16 @@ class Allocator:
             if not left:
                 left = None
 
+        elif isinstance(extractor, PositiveVoid):
+            if left == "":
+                left = None
+            else:
+                left = right
+                right = ""
+
         elif isinstance(extractor, NullVoid):
-            left = None
+            left = ""
+            right = ""
 
         if left is None or right is None:
             raise ExtractionFailed()
@@ -306,10 +303,6 @@ class Allocator:
             if takes_all and right:
                 raise ExtractionFailed()
             return left, right
-
-    @staticmethod
-    def generate_framing_group():
-        return "".join([chr(x) for x in sample(range(0xe000, 0xf8ff), defaults.framing_group_length)])
 
     def add_char_equivalent(self, char, equivalent):
         """
@@ -425,6 +418,11 @@ class LengthInteger(Extractor):
         Extractor.__init__(self, value)
 
 
+class PositiveVoid(Extractor):
+    def __init__(self):
+        Extractor.__init__(self, None)
+
+
 class NullVoid(Extractor):
     def __init__(self):
         Extractor.__init__(self, None)
@@ -439,4 +437,8 @@ class CannotMoveRight(Exception):
 
 
 class ExtractionFailed(Exception):
+    pass
+
+
+class SplitterNotSupported(Exception):
     pass

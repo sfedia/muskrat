@@ -97,7 +97,7 @@ def connection_depth(value=None, compare=None):
         raise ValueError()
 
     def get_depth(obj):
-        dive_dit = obj.dive(behind=defaults.max_connection_depth, return_dit=True)
+        dive_dit = obj.dive(behind=max_connection_depth, return_dit=True)
         if compare is None:
             return dive_dit.counter == value
         else:

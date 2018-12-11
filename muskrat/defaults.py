@@ -29,16 +29,6 @@ feature_coming = """This feature is coming soon (check for the next version: see
 https://github.com/prodotiscus/muskrat or use PyPI)"""
 
 
-class Defaults:
-    def __init__(self):
-        self.max_connection_depth = sys.getrecursionlimit()
-        self.methods_priority = dict(connect=0, insert=1, append=2)
-        self.framing_group_length = 4
-
-
-defaults = Defaults()
-
-
 class Grouping(Pattern):
     """Default pattern subclass for creating object groups"""
     def __init__(self, grouping_name, properties=None):
@@ -56,6 +46,9 @@ class Grouping(Pattern):
 
 def group_filter(group_name):
     return LogicalAND(by_type("Grouping"), by_property(kw_property="name", kw_value=group_name))
+
+
+max_connection_depth = sys.getrecursionlimit()
 
 
 class VersionOutOfDate(Exception):
