@@ -15,6 +15,11 @@ from muskrat.connectivity import Accept, Attach
 from . import scan_row, object_model
 
 
+class CommonTracker(Tracker):
+    def __init__(self, *args):
+        Tracker.__init__(self, *args)
+
+
 class PlainTextTracker(Tracker):
     def __init__(self, *args):
         Tracker.__init__(self, *args)
@@ -30,7 +35,7 @@ class LTTag(Pattern):
         )
 
 
-class LTTagTr(Tracker):
+class LTTagTr(CommonTracker):
     def __init__(self, *args):
         Tracker.__init__(self, *args)
         self.pattern = LTTag()
@@ -112,7 +117,7 @@ class LMGreedy(Pattern):
         )
 
 
-class LMGreedyTr(Tracker):
+class LMGreedyTr(CommonTracker):
     def __init__(self, *args):
         Tracker.__init__(self, *args)
         self.pattern = LMGreedy()
@@ -134,7 +139,7 @@ class AlphaChar(Pattern):
         )
 
 
-class AlphaCharTr(Tracker):
+class AlphaCharTr(CommonTracker):
     def __init__(self, *args):
         Tracker.__init__(self, *args)
         self.pattern = AlphaChar()
@@ -150,8 +155,9 @@ res_main = []
 def test_main():
     parser = Parser()
     text = "lmao <lmao> lmao"
-    allocator = Allocator(text, CharSequenceString(" "), parser)
-
+    allocator = Allocator(text, CharSequenceString(" "), parser, parameters={
+        "tracker_family": [CommonTracker]
+    })
     allocator.cursor.add_dynamic_mapper(
         lambda p, c: p.get(1).pattern.object_type == "<Tag",
         lambda p, c: p.get(1).pattern.object_type == "Tag>",
