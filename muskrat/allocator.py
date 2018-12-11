@@ -294,8 +294,11 @@ class Allocator:
                 right = ""
 
         elif isinstance(extractor, NullVoid):
-            left = ""
-            right = ""
+            if left != "":
+                left = None
+            else:
+                left = extractor.value
+                right = ""
 
         if left is None or right is None:
             raise ExtractionFailed()
@@ -424,8 +427,8 @@ class PositiveVoid(Extractor):
 
 
 class NullVoid(Extractor):
-    def __init__(self):
-        Extractor.__init__(self, None)
+    def __init__(self, replace_with=""):
+        Extractor.__init__(self, replace_with)
 
 
 class AlreadyAllocated(Exception):
