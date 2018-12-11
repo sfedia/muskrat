@@ -287,14 +287,14 @@ class Allocator:
                 left = None
 
         elif isinstance(extractor, PositiveVoid):
-            if left == "":
+            if unit_string == "":
                 left = None
             else:
-                left = right
+                left = unit_string
                 right = ""
 
         elif isinstance(extractor, NullVoid):
-            if left != "":
+            if unit_string != "":
                 left = None
             else:
                 left = extractor.value
