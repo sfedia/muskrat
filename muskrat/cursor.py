@@ -81,16 +81,20 @@ class AllocatorCursor:
         return getattr(current.attributes, attr_name)
 
     @property
-    def max_connection_depth(self):
-        return self.get_attribute("max_connection_depth")
-
-    @property
     def methods_priority(self):
         return self.get_attribute("methods_priority")
+
+    @methods_priority.setter
+    def methods_priority(self, value):
+        self.defaults.attributes.methods_priority = value
 
     @property
     def tracker_family(self):
         return self.get_attribute("tracker_family")
+
+    @tracker_family.setter
+    def tracker_family(self, value):
+        self.defaults.attributes.tracker_family = value
 
     @property
     def left_depth_limit(self):
@@ -106,6 +110,10 @@ class AllocatorCursor:
     @property
     def greedy(self):
         return self.get_attribute("greedy")
+
+    @greedy.setter
+    def greedy(self, value):
+        self.defaults.attributes.greedy = value
 
 
 class SliceAttributes:
