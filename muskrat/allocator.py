@@ -95,6 +95,9 @@ class Allocator:
         elif isinstance(self.splitter, NullVoid):
             self.units = [self.text]
 
+        else:
+            raise SplitterNotSupported
+
         if self.end_position and len(self.units) > 1:
             del self.units[-1]
 
@@ -283,6 +286,13 @@ class Allocator:
             if not left:
                 left = None
 
+        elif isinstance(extractor, PositiveVoid):
+            if left == "":
+                left = None
+            else:
+                left = right
+                right = ""
+
         elif isinstance(extractor, NullVoid):
             left = ""
             right = ""
@@ -408,6 +418,11 @@ class LengthInteger(Extractor):
         Extractor.__init__(self, value)
 
 
+class PositiveVoid(Extractor):
+    def __init__(self):
+        Extractor.__init__(self, None)
+
+
 class NullVoid(Extractor):
     def __init__(self):
         Extractor.__init__(self, None)
@@ -422,4 +437,8 @@ class CannotMoveRight(Exception):
 
 
 class ExtractionFailed(Exception):
+    pass
+
+
+class SplitterNotSupported(Exception):
     pass
