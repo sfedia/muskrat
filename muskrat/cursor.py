@@ -24,8 +24,8 @@ from .pattern import Tracker
 
 
 class AllocatorCursor:
-    def __init__(self, position):
-        self.defaults = SliceAttributes()
+    def __init__(self, position, defaults_kwargs):
+        self.defaults = SliceAttributes(**defaults_kwargs)
         self.current = position
         self.dynamic_mappers = []
         self.dynamic_mapper = namedtuple("DynamicMapper", ["start_if", "finalize_if", "attributes"])
@@ -141,6 +141,3 @@ class SliceAttributes:
             self.attr_proto.__new__.__defaults__ = attribute_values
 
         self.attributes = self.attr_proto(**kwargs)
-
-    def set_tracker_family(self, *args):
-        self.attributes.tracker_family = args
