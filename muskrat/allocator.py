@@ -29,7 +29,7 @@ from .connectivity import *
 
 class Allocator:
     """Allocator is used to divide the whole text into units"""
-    def __init__(self, text, splitter, parser, position=0):
+    def __init__(self, text, splitter, parser, position=0, parameters=None):
         """
         Create an allocator instance
         :param text: the whole text
@@ -52,7 +52,7 @@ class Allocator:
         self.parser_add_boxes()
         self.units = []
         self.current = position
-        self.cursor = AllocatorCursor(self.current)
+        self.cursor = AllocatorCursor(self.current, parameters if parameters else {})
         self.splitter = splitter
         if not issubclass(type(self.splitter), Extractor):
             raise ValueError()
