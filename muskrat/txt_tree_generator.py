@@ -35,6 +35,7 @@ class TXTTree:
             self.print_row(obj.connected_objects, indent + self.indent)
 
     def print(self, message):
+        """This method can be changed (it has access to 'self' anyway)"""
         print(message)
 
     def build(self):
