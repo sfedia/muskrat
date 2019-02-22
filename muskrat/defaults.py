@@ -2,7 +2,7 @@
 
 """
 Muskrat: minimalistic non-BNF text parser and tree generator
-Copyright (C) 2018 Fyodor Sizov
+Copyright (C) 2019 Fyodor Sizov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import sys
+from collections import namedtuple
 from .pattern import *
 from .filters import *
 from .connectivity import Accept, Attach
@@ -46,6 +47,16 @@ class Grouping(Pattern):
 
 def group_filter(group_name):
     return LogicalAND(by_type("Grouping"), by_property(kw_property="name", kw_value=group_name))
+
+
+def namedtuple_with_defaults(*args, **kwargs):
+    defaults = kwargs["defaults"]
+    if sys.version_info >= (3, 7):
+        ntuple = namedtuple(*args, defaults=defaults)
+    else:
+        ntuple = namedtuple(*args)
+        ntuple.__new__.__defaults__ = defaults
+    return ntuple
 
 
 max_connection_depth = sys.getrecursionlimit()
