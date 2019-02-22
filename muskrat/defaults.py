@@ -51,10 +51,11 @@ def group_filter(group_name):
 
 def namedtuple_with_defaults(*args, **kwargs):
     defaults = kwargs["defaults"]
+    del kwargs["defaults"]
     if sys.version_info >= (3, 7):
-        ntuple = namedtuple(*args, defaults=defaults)
+        ntuple = namedtuple(*args, defaults=defaults, **kwargs)
     else:
-        ntuple = namedtuple(*args)
+        ntuple = namedtuple(*args, **kwargs)
         ntuple.__new__.__defaults__ = defaults
     return ntuple
 
