@@ -114,15 +114,17 @@ class DiveIterator:
     def __iter__(self):
         return self
 
-    def __init__(self, objects, behind=1, condition=lambda obj: True, depth_limit=None):
+    def __init__(self, objects, behind=1, condition=lambda obj: True, depth_limit=None, add_selected=False):
         self.objects = list(reversed(objects))
         self.behind = behind
         self.condition = condition
         self.depth_limit = depth_limit
+        self.add_selected = add_selected
         self.current_object = 0
         self.counter = 0
         self.this = None
         self.is_selected = False
+        self.selected_objects = []
         self.object_wrapper = namedtuple("ObjectWrapper", ["selected", "obj"])
 
     def __next__(self):
@@ -141,6 +143,9 @@ class DiveIterator:
         for o in child_di:
             pass
 
+        if self.add_selected:
+            self.selected_objects.extend(child_di.selected_objects)
+
         self.counter += child_di.counter
         self.behind = child_di.behind
 
@@ -153,6 +158,7 @@ class DiveIterator:
                 elif self.behind > 1:
                     self.is_selected = True
                     self.behind -= 1
+                self.selected_objects.append(self.objects[self.current_object])
 
         if self.this:
             raise StopIteration
