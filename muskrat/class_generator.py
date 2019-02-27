@@ -29,8 +29,8 @@ class ExecuteFromTree:
         self.tree = tree
         self.argument_states = dict()
 
-    def __new_arg_state(self, argument_name, **kwargs):
-        self.argument_states[argument_name] = kwargs
+    def __new_arg_state(self, argument_name, **state):
+        self.argument_states[argument_name] = state
 
     def raise_if_not_passed(self, argument_name, exception):
         if not self.argument_states[argument_name]["passed"]:
