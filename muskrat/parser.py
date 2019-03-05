@@ -57,7 +57,11 @@ class Parser:
         self.depth_limit = None
 
     def get(self, behind=1, depth=inf, condition=lambda x: True):
-        return iterate_objects(self.objects, behind, depth, condition)
+        this = None
+        for behind_, depth_, selected, object_ in iterate_objects(self.objects, behind, depth, condition):
+            if selected and not behind_:
+                this = object_
+        return this
 
     def append(self, obj):
         """
@@ -100,7 +104,11 @@ class ParsingObject:
         self.connected_objects.append(object2connect)
 
     def get(self, behind=1, depth=inf, condition=lambda obj: True):
-        return iterate_objects(self.connected_objects, behind, depth, condition)
+        this = None
+        for behind_, depth_, selected, object_ in iterate_objects(self.connected_objects, behind, depth, condition):
+            if selected and not behind_:
+                this = object_
+        return this
 
     def insert_content(self, content2insert, update_function=None):
         """
