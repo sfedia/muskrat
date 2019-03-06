@@ -57,11 +57,9 @@ class Parser:
         self.depth_limit = None
 
     def get(self, behind=1, depth=inf, condition=lambda x: True):
-        this = None
         for behind_, depth_, selected, object_ in iterate_objects(self.objects, behind, depth, condition):
             if selected and not behind_:
-                this = object_
-        return this
+                return object_
 
     def append(self, obj):
         """
