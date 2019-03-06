@@ -22,16 +22,16 @@ import muskrat.pattern
 from math import inf
 
 
-def iterate_objects(objects, behind=1, depth=inf, condition=lambda x: True, ignore_childs=False):
+def iterate_objects(objects, behind=1, depth=inf, condition=lambda x: True, ignore_childs=False, level=0):
     for obj in reversed(objects):
         childs = []
 
         if not ignore_childs:
-            for behind_, depth_, selected, object_ in iterate_objects(
-                    obj.connected_objects, behind, depth, condition):
+            for behind_, depth_, level, selected, object_ in iterate_objects(
+                    obj.connected_objects, behind, depth, condition, level=level + 1):
                 behind = behind_
                 depth = depth_
-                childs.append((behind_, depth_, selected, object_))
+                childs.append((behind_, depth_, level, selected, object_))
                 if not behind:
                     break
 
@@ -43,11 +43,11 @@ def iterate_objects(objects, behind=1, depth=inf, condition=lambda x: True, igno
         depth -= 1
         if condition(obj):
             behind -= 1
-            yield behind, depth, True, obj
+            yield behind, depth, level, True, obj
             if not behind:
                 raise StopIteration
         else:
-            yield behind, depth, False, obj
+            yield behind, depth, level, False, obj
 
 
 class Parser:
@@ -59,7 +59,7 @@ class Parser:
         self.depth_limit = None
 
     def get(self, behind=1, depth=inf, condition=lambda x: True):
-        for behind_, depth_, selected, object_ in iterate_objects(self.objects, behind, depth, condition):
+        for behind_, depth_, level, selected, object_ in iterate_objects(self.objects, behind, depth, condition):
             if selected and not behind_:
                 return object_
 
@@ -104,7 +104,8 @@ class ParsingObject:
         self.connected_objects.append(object2connect)
 
     def get(self, behind=1, depth=inf, condition=lambda obj: True):
-        for behind_, depth_, selected, object_ in iterate_objects(self.connected_objects, behind, depth, condition):
+        for behind_, depth_, level, selected, object_ in iterate_objects(
+                self.connected_objects, behind, depth, condition):
             if selected and not behind_:
                 return object_
 
