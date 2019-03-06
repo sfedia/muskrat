@@ -89,7 +89,7 @@ class AlignQueries:
     def __next__(self):
         if self.counter == len(self.found[0]):
             raise StopIteration
-        generated_tree = [query[self.counter] for query in self.queries]
+        generated_tree = [query[self.counter] for query in self.found]
         self.counter += 1
         return generated_tree
 
