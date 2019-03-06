@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from math import inf
-from .parser import DiveIterator
+from .parser import iterate_objects
 from .filters import *
 
 
@@ -91,10 +91,10 @@ class AlignFilterQueries(AlignQueries):
     def __init__(self, objects, *filter_queries, equal_length=True):
         def filter_query_wrapper(filter_query):
             def query(o):
-                iterator = DiveIterator(o, inf, lambda obj: unify(filter_query).process(obj), add_selected=True)
-                for first_level in iterator:
-                    pass
-                return iterator.selected_objects
+                return [
+                    object_ for behind_, depth_, selected, object_ in iterate_objects(
+                        o, inf, condition=lambda obj: unify(filter_query).process(obj)) if selected
+                ]
             return query
         AlignQueries.__init__(self, objects, [filter_query_wrapper(flt) for flt in filter_queries], equal_length)
 
