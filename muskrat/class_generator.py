@@ -47,23 +47,29 @@ class ExecuteFromTree:
             blocks=False,
             args=None,
             kwargs=None):
+
         if argument_name in self.argument_states and self.argument_states[argument_name]["blocked"]:
             return
+
         data = selector(self.tree)
+
         if when(data):
             data = form(data)
             if args is None:
                 args = []
             if kwargs is None:
                 kwargs = {}
+
             if type(identifier) == int:
                 args.insert(identifier, data)
             else:
                 kwargs[identifier] = data
+                
             if attr_name == "__init__":
                 self.target = self.target(*args, **kwargs)
             else:
                 getattr(self.target, attr_name)(*args, **kwargs)
+
             if argument_name not in self.argument_states:
                 self.__new_arg_state(argument_name, blocked=blocks, passed=True)
 
