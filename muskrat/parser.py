@@ -2,7 +2,7 @@
 
 """
 Muskrat: minimalistic non-BNF text parser and tree generator
-Copyright (C) 2018 Fyodor Sizov
+Copyright (C) 2019 Fyodor Sizov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import muskrat.pattern
-from collections import namedtuple
+from math import inf
+
+
+def iterate_objects(objects, behind=1, depth=inf, condition=lambda x: True):
+    for obj in reversed(objects):
+        childs = []
+        for behind_, depth_, selected, object_ in iterate_objects(
+                obj.connected_objects, behind, depth, condition):
+            behind = behind_
+            depth = depth_
+            childs.append((behind_, depth_, selected, object_))
+            if not behind:
+                break
+
+        yield from childs
+
+        if not behind or not depth:
+            raise StopIteration
+
+        depth -= 1
+        if condition(obj):
+            behind -= 1
+            yield behind, depth, True, obj
+            if not behind:
+                raise StopIteration
+        else:
+            yield behind, depth, False, obj
 
 
 class Parser:
@@ -30,23 +56,12 @@ class Parser:
         self.objects = []
         self.depth_limit = None
 
-    def get(self, behind=1, condition=lambda obj: True, return_dit=False):
-        """
-        Method used to acquire certain object from the parser
-        :param behind: number of element to select which satisfies the condition
-        :type behind: int
-        :param condition: object-checking condition if the form of function
-        :param return_dit: parameter which determines if the whole 'dit' should be returned
-        :rtype: ParsingObject
-        """
-        dit = DiveIterator(self.objects, behind, condition, self.depth_limit)
-        for fg_child in dit:
-            pass
-
-        if return_dit:
-            return dit
-
-        return dit.this if dit.this else None
+    def get(self, behind=1, depth=inf, condition=lambda x: True):
+        this = None
+        for behind_, depth_, selected, object_ in iterate_objects(self.objects, behind, depth, condition):
+            if selected and not behind_:
+                this = object_
+        return this
 
     def append(self, obj):
         """
@@ -88,15 +103,12 @@ class ParsingObject:
         """
         self.connected_objects.append(object2connect)
 
-    def dive(self, behind=1, condition=lambda obj: True, depth_limit=None, return_dit=False):
-        dit = DiveIterator(self.connected_objects, behind, condition, depth_limit)
-        for fg_child in dit:
-            pass
-
-        if return_dit:
-            return dit
-
-        return dit.this if dit.this else None
+    def get(self, behind=1, depth=inf, condition=lambda obj: True):
+        this = None
+        for behind_, depth_, selected, object_ in iterate_objects(self.connected_objects, behind, depth, condition):
+            if selected and not behind_:
+                this = object_
+        return this
 
     def insert_content(self, content2insert, update_function=None):
         """
@@ -108,55 +120,3 @@ class ParsingObject:
         self.content += content2insert
         if update_function is not None:
             self.content = update_function(self.content)
-
-
-class DiveIterator:
-    def __iter__(self):
-        return self
-
-    def __init__(self, objects, behind=1, condition=lambda obj: True, depth_limit=None):
-        self.objects = list(reversed(objects))
-        self.behind = behind
-        self.condition = condition
-        self.depth_limit = depth_limit
-        self.current_object = 0
-        self.counter = 0
-        self.this = None
-        self.is_selected = False
-        self.object_wrapper = namedtuple("ObjectWrapper", ["selected", "obj"])
-
-    def __next__(self):
-        if self.current_object == len(self.objects):
-            raise StopIteration
-
-        self.is_selected = False
-        self.counter += 1
-        child_di = DiveIterator(
-            self.objects[self.current_object].connected_objects,
-            self.behind,
-            self.condition,
-            self.depth_limit
-        )
-
-        for o in child_di:
-            pass
-
-        self.counter += child_di.counter
-        self.behind = child_di.behind
-
-        if child_di.this:
-            self.this = child_di.this
-        elif self.depth_limit is not None and self.counter < self.depth_limit or self.counter:
-            if self.condition(self.objects[self.current_object]):
-                if self.behind == 1:
-                    self.this = self.objects[self.current_object]
-                elif self.behind > 1:
-                    self.is_selected = True
-                    self.behind -= 1
-
-        if self.this:
-            raise StopIteration
-
-        self.current_object += 1
-
-        return self.object_wrapper(self.is_selected, self.objects[self.current_object - 1])

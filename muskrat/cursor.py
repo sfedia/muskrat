@@ -18,8 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
-from collections import namedtuple
+from .defaults import *
 from .pattern import Tracker
 
 
@@ -134,10 +133,5 @@ class SliceAttributes:
             True
         )
 
-        if sys.version_info >= (3, 7):
-            self.attr_proto = namedtuple("SliceAttributeStorage", attribute_names, defaults=attribute_values)
-        else:
-            self.attr_proto = namedtuple("SliceAttributeStorage", attribute_names)
-            self.attr_proto.__new__.__defaults__ = attribute_values
-
+        self.attr_proto = namedtuple_with_defaults("SliceAttributeStorage", attribute_names, defaults=attribute_values)
         self.attributes = self.attr_proto(**kwargs)
