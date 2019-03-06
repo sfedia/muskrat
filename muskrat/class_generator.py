@@ -46,7 +46,8 @@ class ExecuteFromTree:
             form=lambda data: data,
             blocks=False,
             args=None,
-            kwargs=None):
+            kwargs=None,
+            identifier_as_key=False):
 
         if argument_name in self.argument_states and self.argument_states[argument_name]["blocked"]:
             return
@@ -60,11 +61,11 @@ class ExecuteFromTree:
             if kwargs is None:
                 kwargs = {}
 
-            if type(identifier) == int:
+            if type(identifier) == int and not identifier_as_key:
                 args.insert(identifier, data)
             else:
                 kwargs[identifier] = data
-                
+
             if attr_name == "__init__":
                 self.target = self.target(*args, **kwargs)
             else:
