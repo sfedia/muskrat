@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from math import inf
+from collections import deque
 from .parser import iterate_objects
 from .filters import *
 
@@ -104,6 +105,66 @@ class AlignFilterQueries(AlignQueries):
                 ]
             return query
         AlignQueries.__init__(self, objects, [filter_query_wrapper(flt) for flt in filter_queries], equal_length)
+
+
+class PairedTypesGroup:
+    def __init__(self):
+        self.this_row = deque([])
+        self.pgt_in = deque([])
+
+    def add_object(self, object_):
+        if not self.pgt_in:
+            self.this_row.appendleft(object_)
+        else:
+            self.pgt_in[0].add_object(object_)
+
+    def add_pgt(self):
+        self.this_row.appendleft(PairedTypesGroup())
+        self.pgt_in.appendleft(self.this_row[0])
+
+    def remove_last_pgt(self):
+        try:
+            self.pgt_in.pop()
+            return True
+        except IndexError:
+            return False
+
+    def get_group(self, *path, stop_at_max=False):
+        pgt = self
+        while path:
+            try:
+                pgt = pgt.pgt_in[path.pop()]
+            except IndexError:
+                if stop_at_max:
+                    pgt = pgt.pgt_in[-1]
+                else:
+                    raise IndexError
+        return pgt
+
+
+def between_paired_types(objects, left_border, right_border, include_borders=True):
+    between = deque([])
+    inside_last = False
+
+    for behind_, depth_, selected, object_ in iterate_objects(objects, behind=inf):
+        if right_border(object_):
+            if not inside_last:
+                between.appendleft(PairedTypesGroup())
+                inside_last = True
+                if include_borders:
+                    between[0].add_object(object_)
+            else:
+                between[0].add_pgt()
+                if include_borders:
+                    between[0].add_object(object_)
+        elif left_border(object_):
+            if include_borders:
+                between[0].add_object(object_)
+                inside_last = between[0].remove_last_pgt()
+        elif inside_last:
+            between[0].add_object(object_)
+
+    yield from between
 
 
 class CannotAddArgument(Exception):
