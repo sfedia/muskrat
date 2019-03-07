@@ -183,7 +183,7 @@ def between_paired_types(objects, left_border, right_border, include_borders=Tru
         elif left_border(object_):
             if include_borders:
                 between[0].add_object(object_)
-                inside_last = between[0].remove_last_pgt()
+            inside_last = between[0].remove_last_pgt()
         elif inside_last:
             between[0].add_object(object_)
 
