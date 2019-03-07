@@ -100,7 +100,7 @@ class AlignFilterQueries(AlignQueries):
         def filter_query_wrapper(filter_query):
             def query(o):
                 return [
-                    object_ for behind_, depth_, selected, object_ in iterate_objects(
+                    object_ for behind_, depth_, level, selected, object_ in iterate_objects(
                         o, inf, condition=lambda obj: unify(filter_query).process(obj)) if selected
                 ]
             return query
@@ -129,6 +129,17 @@ class PairedTypesGroup:
         except IndexError:
             return False
 
+    def equalize_levels(self):
+        i = 0
+        while i < len(self.this_row) - 1:
+            this = self.this_row[i]
+            nxt = self.this_row[i + 1]
+            if isinstance(nxt, PairedTypesGroup):
+                nxt.equalize_levels()
+            elif nxt.level > this.level:
+                self.this_row.pop(i + 1)
+            i += 1
+
     def get_group(self, *path, stop_at_max=False):
         pgt = self
         while path:
@@ -146,7 +157,8 @@ def between_paired_types(objects, left_border, right_border, include_borders=Tru
     between = deque([])
     inside_last = False
 
-    for behind_, depth_, selected, object_ in iterate_objects(objects, behind=inf):
+    for behind_, depth_, level, selected, object_ in iterate_objects(objects, behind=inf):
+        object_.level = level
         if right_border(object_):
             if not inside_last:
                 between.appendleft(PairedTypesGroup())
