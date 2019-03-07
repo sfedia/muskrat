@@ -122,6 +122,3 @@ def test_main():
         pgt_goo = ['bc', 'ef']
         for e, obj in enumerate(pgt.get_objects_only()):
             assert obj.content == pgt_goo[e]
-
-
-test_main()
