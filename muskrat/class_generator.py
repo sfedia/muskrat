@@ -138,19 +138,21 @@ class PairedTypesGroup:
                 this.equalize_levels()
             if isinstance(nxt, PairedTypesGroup):
                 nxt.equalize_levels()
-            elif nxt.level > this.level:
+            elif not isinstance(this, PairedTypesGroup) and nxt.level > this.level:
                 self.this_row.pop(i + 1)
             i += 1
         return self
 
     def get_group(self, *path, stop_at_max=False):
+        path = list(path)
         pgt = self
         while path:
+            pgt_in = [obj for obj in pgt.this_row if isinstance(obj, PairedTypesGroup)]
             try:
-                pgt = pgt.pgt_in[path.pop()]
+                pgt = pgt_in[path.pop()]
             except IndexError:
                 if stop_at_max:
-                    pgt = pgt.pgt_in[-1]
+                    pgt = pgt_in[-1]
                 else:
                     raise IndexError
         return pgt
