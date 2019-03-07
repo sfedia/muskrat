@@ -134,11 +134,14 @@ class PairedTypesGroup:
         while i < len(self.this_row) - 1:
             this = self.this_row[i]
             nxt = self.this_row[i + 1]
+            if isinstance(this, PairedTypesGroup):
+                this.equalize_levels()
             if isinstance(nxt, PairedTypesGroup):
                 nxt.equalize_levels()
             elif nxt.level > this.level:
                 self.this_row.pop(i + 1)
             i += 1
+        return self
 
     def get_group(self, *path, stop_at_max=False):
         pgt = self
@@ -153,7 +156,7 @@ class PairedTypesGroup:
         return pgt
 
 
-def between_paired_types(objects, left_border, right_border, include_borders=True):
+def between_paired_types(objects, left_border, right_border, include_borders=True, equalize=True):
     between = deque([])
     inside_last = False
 
@@ -176,7 +179,10 @@ def between_paired_types(objects, left_border, right_border, include_borders=Tru
         elif inside_last:
             between[0].add_object(object_)
 
-    yield from between
+    if not equalize:
+        yield from between
+    else:
+        yield from [ptg.equalize_levels() for ptg in between]
 
 
 class CannotAddArgument(Exception):
