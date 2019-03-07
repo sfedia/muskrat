@@ -59,6 +59,8 @@ class Parser:
         self.depth_limit = None
 
     def get(self, behind=1, depth=inf, condition=lambda x: True):
+        if self.depth_limit is not None:
+            depth = self.depth_limit
         for behind_, depth_, level, selected, object_ in iterate_objects(self.objects, behind, depth, condition):
             if selected and not behind_:
                 return object_
