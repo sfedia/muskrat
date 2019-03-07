@@ -143,11 +143,17 @@ class PairedTypesGroup:
             i += 1
         return self
 
+    def get_objects_only(self):
+        yield from [obj for obj in self.this_row if not isinstance(obj, PairedTypesGroup)]
+
+    def get_pgt_only(self):
+        yield from [obj for obj in self.this_row if isinstance(obj, PairedTypesGroup)]
+
     def get_group(self, *path, stop_at_max=False):
         path = list(path)
         pgt = self
         while path:
-            pgt_in = [obj for obj in pgt.this_row if isinstance(obj, PairedTypesGroup)]
+            pgt_in = [obj for obj in pgt.get_pgt_only()]
             try:
                 pgt = pgt_in[path.pop()]
             except IndexError:
