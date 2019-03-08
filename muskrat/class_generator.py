@@ -20,7 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from math import inf
 from collections import deque
-from .parser import iterate_objects
+from collections.abc import Iterable
+from .parser import iterate_objects, Parser
 from .filters import *
 
 
@@ -48,7 +49,8 @@ class ExecuteFromTree:
             blocks=False,
             args=None,
             kwargs=None,
-            identifier_as_key=False):
+            identifier_as_key=False,
+            iterable_identifier=False):
 
         if argument_name in self.argument_states and self.argument_states[argument_name]["blocked"]:
             return
@@ -62,14 +64,21 @@ class ExecuteFromTree:
             if kwargs is None:
                 kwargs = {}
 
-            if type(identifier) == int and not identifier_as_key:
+            if iterable_identifier:
+                for n, element in enumerate(data):
+                    if type(identifier[n]) == int and not identifier_as_key:
+                        args.insert(identifier[n], element)
+                    else:
+                        kwargs[identifier[n]] = element
+            elif type(identifier) == int and not identifier_as_key:
                 args.insert(identifier, data)
-            else:
+            elif not isinstance(identifier, Iterable) or type(identifier) == str:
                 kwargs[identifier] = data
 
             if attr_name == "__init__":
                 self.target = self.target(*args, **kwargs)
             else:
+                print(args, kwargs)
                 getattr(self.target, attr_name)(*args, **kwargs)
 
             if argument_name not in self.argument_states:
@@ -80,18 +89,18 @@ class AlignQueries:
     def __iter__(self):
         return self
 
-    def __init__(self, objects, *query_functions, equal_length=True):
+    def __init__(self, objects, query_functions, equal_length=True):
         self.queries = query_functions
         self.found = [query(objects) for query in self.queries]
-        self.counter = 0
-        if equal_length and len(set(query_functions)) > 1:
+        if equal_length and len(set(len(f) for f in self.found)) > 1:
             raise DifferentLengthQueries
+        self.counter = len(self.found[0]) - 1
 
     def __next__(self):
-        if self.counter == len(self.found[0]):
+        if self.counter == -1:
             raise StopIteration
         generated_tree = [query[self.counter] for query in self.found]
-        self.counter += 1
+        self.counter -= 1
         return generated_tree
 
 
@@ -101,7 +110,7 @@ class AlignFilterQueries(AlignQueries):
             def query(o):
                 return [
                     object_ for behind_, depth_, level, selected, object_ in iterate_objects(
-                        o, inf, condition=lambda obj: unify(filter_query).process(obj)) if selected
+                        o, inf, condition=lambda obj: unify(filter_query)(obj)) if selected
                 ]
             return query
         AlignQueries.__init__(self, objects, [filter_query_wrapper(flt) for flt in filter_queries], equal_length)
@@ -201,7 +210,7 @@ def select_by_condition(condition, behind=1):
 
 
 def select_by_filter(filtering, behind=1):
-    return select_by_condition(lambda x: unify(filtering).process(x), behind)
+    return select_by_condition(lambda x: unify(filtering)(x), behind)
 
 
 class CannotAddArgument(Exception):
