@@ -193,6 +193,17 @@ def between_paired_types(objects, left_border, right_border, include_borders=Tru
         yield from [ptg.equalize_levels() for ptg in between]
 
 
+def select_by_condition(condition, behind=1):
+    def selector(tree):
+        parser = Parser()
+        parser.objects = tree
+        return parser.get(behind, condition=condition)
+
+
+def select_by_filter(filtering, behind=1):
+    return select_by_condition(lambda x: unify(filtering).process(x), behind)
+
+
 class CannotAddArgument(Exception):
     pass
 
