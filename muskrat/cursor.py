@@ -140,4 +140,4 @@ class SliceAttributes:
 
     @property
     def values(self):
-        return tuple(attr for attr in self.attr_proto)
+        return tuple(attr for attr in self.attributes)
