@@ -85,35 +85,23 @@ class ExecuteFromTree:
                 self.__new_arg_state(argument_name, blocked=blocks, passed=True)
 
 
-class AlignQueries:
-    def __iter__(self):
-        return self
-
-    def __init__(self, objects, query_functions, equal_length=True):
-        self.queries = query_functions
-        self.found = [query(objects) for query in self.queries]
-        if equal_length and len(set(len(f) for f in self.found)) > 1:
-            raise DifferentLengthQueries
-        self.counter = len(self.found[0]) - 1
-
-    def __next__(self):
-        if self.counter == -1:
-            raise StopIteration
-        generated_tree = [query[self.counter] for query in self.found]
-        self.counter -= 1
-        return generated_tree
+def align_queries(objects, query_functions, equal_length=True):
+    found = [query(objects)[::-1] for query in query_functions]
+    if equal_length and len(set(len(f) for f in found)) > 1:
+        raise DifferentLengthQueries
+    yield from zip(*found)
 
 
-class AlignFilterQueries(AlignQueries):
-    def __init__(self, objects, *filter_queries, equal_length=True):
-        def filter_query_wrapper(filter_query):
-            def query(o):
-                return [
-                    object_ for behind_, depth_, level, selected, object_ in iterate_objects(
-                        o, inf, condition=lambda obj: unify(filter_query)(obj)) if selected
-                ]
-            return query
-        AlignQueries.__init__(self, objects, [filter_query_wrapper(flt) for flt in filter_queries], equal_length)
+def align_filter_queries(objects, *filter_queries, equal_length=True):
+    def filter_query_wrapper(filter_query):
+        def query(o):
+            return [
+                object_ for behind_, depth_, level, selected, object_ in iterate_objects(
+                    o, inf, condition=lambda obj: unify(filter_query)(obj)) if selected
+            ]
+
+        return query
+    yield from align_queries(objects, [filter_query_wrapper(flt) for flt in filter_queries], equal_length)
 
 
 class PairedTypesGroup:
