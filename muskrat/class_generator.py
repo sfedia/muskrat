@@ -161,9 +161,9 @@ class PairedTypesGroup:
         return pgt
 
 
-def between_paired_types(objects, left_border, right_border, include_borders=True, equalize=True):
+def between_paired_types(objects, left_border, right_border, include_borders=True, equalize=True, meta_include=False):
     between = deque([])
-    inside_last = False
+    inside_last = meta_include
 
     for behind_, depth_, level, selected, object_ in iterate_objects(objects, behind=inf):
         object_.level = level
