@@ -2,7 +2,7 @@
 
 """
 Muskrat: minimalistic non-BNF text parser and tree generator
-Copyright (C) 2018 Fyodor Sizov
+Copyright (C) 2019 Fyodor Sizov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ from . import xml_generator
 
 
 __author__ = "Fyodor Sizov"
-__copyright__ = "Copyright 2018, Fyodor Sizov"
+__copyright__ = "Copyright 2019, Fyodor Sizov"
 __license__ = "GPL 3.0"
-__version__ = "1.0.12"
+__version__ = "1.0.14"
 __email__ = "prodotiscus@gmail.com"
