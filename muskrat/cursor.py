@@ -2,7 +2,7 @@
 
 """
 Muskrat: minimalistic non-BNF text parser and tree generator
-Copyright (C) 2018 Fyodor Sizov
+Copyright (C) 2019 Fyodor Sizov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ class AllocatorCursor:
         if not self.dm_stack:
             return self.defaults
         else:
-            return SliceAttributes(**self.dm_stack[-1].attributes)
+            return SliceAttributes(defaults=self.defaults.values, **self.dm_stack[-1].attributes)
 
     def add_dynamic_mapper(self, start_if, finalize_if, **kwargs):
         self.dynamic_mappers.append(self.dynamic_mapper(start_if, finalize_if, kwargs))
@@ -116,7 +116,7 @@ class AllocatorCursor:
 
 
 class SliceAttributes:
-    def __init__(self, **kwargs):
+    def __init__(self, defaults=None, **kwargs):
         attribute_names = [
             "methods_priority",
             "tracker_family",
@@ -133,5 +133,11 @@ class SliceAttributes:
             True
         )
 
-        self.attr_proto = namedtuple_with_defaults("SliceAttributeStorage", attribute_names, defaults=attribute_values)
+        self.attr_proto = namedtuple_with_defaults(
+            "SliceAttributeStorage", attribute_names, defaults=(attribute_values if not defaults else defaults)
+        )
         self.attributes = self.attr_proto(**kwargs)
+
+    @property
+    def values(self):
+        return tuple(attr for attr in self.attr_proto)
