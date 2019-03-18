@@ -128,7 +128,7 @@ def test_main():
     tree = muskrat.txt_tree_generator.TXTTree(parser.objects, 2)
     tree.build()
 
-    for var_name, value in AlignFilterQueries(parser.objects, by_type("VarName"), by_type("Value")):
+    for var_name, value in align_filter_queries(parser.objects, by_type("VarName"), by_type("Value")):
         value.content = int(value.content)
         add_vars = ExecuteFromTree(my_vars, [var_name, value])
         add_vars.add_event_on_target(
