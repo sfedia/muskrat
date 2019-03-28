@@ -80,12 +80,12 @@ def by_property(bool_property=None, kw_property=None, kw_value=None):
         return check_prop
 
 
-def has_childs():
-    def scan_childs(obj):
+def has_children():
+    def scan_children(obj):
         if obj.connected_objects:
             return True
         return False
-    return scan_childs
+    return scan_children
 
 
 def connection_level_max(value=None, compare=None):

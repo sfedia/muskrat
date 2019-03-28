@@ -22,20 +22,20 @@ import muskrat.pattern
 from math import inf
 
 
-def iterate_objects(objects, behind=1, depth=inf, condition=lambda x: True, ignore_childs=False, level=0):
+def iterate_objects(objects, behind=1, depth=inf, condition=lambda x: True, ignore_children=False, level=0):
     for obj in reversed(objects):
-        childs = []
+        children = []
 
-        if not ignore_childs:
+        if not ignore_children:
             for behind_, depth_, level_, selected, object_ in iterate_objects(
                     obj.connected_objects, behind, depth, condition, level=level + 1):
                 behind = behind_
                 depth = depth_
-                childs.append((behind_, depth_, level_, selected, object_))
+                children.append((behind_, depth_, level_, selected, object_))
                 if not behind:
                     break
 
-        yield from childs
+        yield from children
 
         if not behind or not depth:
             raise StopIteration
