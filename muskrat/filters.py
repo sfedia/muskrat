@@ -20,6 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 from .defaults import *
+from .parser import iterate_objects
+from math import inf
 
 
 class LogicalOR:
