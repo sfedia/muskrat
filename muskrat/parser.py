@@ -27,11 +27,11 @@ def iterate_objects(objects, behind=1, depth=inf, condition=lambda x: True, igno
         childs = []
 
         if not ignore_childs:
-            for behind_, depth_, level, selected, object_ in iterate_objects(
+            for behind_, depth_, level_, selected, object_ in iterate_objects(
                     obj.connected_objects, behind, depth, condition, level=level + 1):
                 behind = behind_
                 depth = depth_
-                childs.append((behind_, depth_, level, selected, object_))
+                childs.append((behind_, depth_, level_, selected, object_))
                 if not behind:
                     break
 
