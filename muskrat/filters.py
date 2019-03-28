@@ -100,7 +100,7 @@ def connection_level_max(value=None, compare=None):
 
     def get_depth(obj):
         max_level = -1
-        for behind_, depth_, level, selected, object_ in iterate_objects(obj.connected_childs, inf):
+        for behind_, depth_, level, selected, object_ in iterate_objects(obj.connected_objects, inf):
             if level > max_level:
                 max_level = level
 
