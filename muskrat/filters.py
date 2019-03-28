@@ -86,9 +86,9 @@ def has_childs():
     return scan_childs
 
 
-def connection_depth(value=None, compare=None):
+def connection_level_max(value=None, compare=None):
     """
-    Generates a function which compares connection depth of the element with the given value.
+    Generates a function which compares the number of connection levels amongst the child elements with the given value.
     :param value: value to compare with measured connection depth
     :param compare: expr. (function) which takes depth as argument, returns bool
     :return: function (function wrapper)
@@ -97,9 +97,17 @@ def connection_depth(value=None, compare=None):
         raise ValueError()
 
     def get_depth(obj):
-        dive_dit = obj.dive(behind=max_connection_depth, return_dit=True)
+        max_level = -1
+        for behind_, depth_, level, selected, object_ in iterate_objects(obj.connected_childs, inf):
+            if level > max_level:
+                max_level = level
+
+        max_level += 1
+
         if compare is None:
-            return dive_dit.counter == value
+            return max_level == value
         else:
-            return compare(dive_dit.counter)
+            return compare(max_level)
+
     return get_depth
+
