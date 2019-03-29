@@ -112,4 +112,3 @@ def connection_level_max(value=None, compare=None):
             return compare(max_level)
 
     return get_depth
-
