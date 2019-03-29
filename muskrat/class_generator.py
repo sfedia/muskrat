@@ -78,7 +78,6 @@ class ExecuteFromTree:
             if attr_name == "__init__":
                 self.target = self.target(*args, **kwargs)
             else:
-                print(args, kwargs)
                 getattr(self.target, attr_name)(*args, **kwargs)
 
             if argument_name not in self.argument_states:
