@@ -97,7 +97,7 @@ def test_main():
     for pgt in between_paired_types(
             parser.objects,
             lambda o: o.pattern.object_type == "LeftParen",
-            lambda o: o.pattern.object_type == "RightParen"):
+            lambda o: o.pattern.object_type == "RightParen", equalize=False):
         group0 = ['(', 'd', ')']
         for e, obj in enumerate(pgt.get_group(0).get_objects_only()):
             assert obj.content == group0[e]
