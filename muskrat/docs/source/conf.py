@@ -20,13 +20,13 @@
 # -- Project information -----------------------------------------------------
 
 project = 'muskrat'
-copyright = '2018, Fyodor Sizov'
+copyright = '2019, Fyodor Sizov'
 author = 'Fyodor Sizov'
 
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '1.0.12'
+release = '1.0.15'
 
 
 # -- General configuration ---------------------------------------------------

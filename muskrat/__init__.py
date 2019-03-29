@@ -32,5 +32,5 @@ from . import xml_generator
 __author__ = "Fyodor Sizov"
 __copyright__ = "Copyright 2019, Fyodor Sizov"
 __license__ = "GPL 3.0"
-__version__ = "1.0.14"
+__version__ = "1.0.15"
 __email__ = "prodotiscus@gmail.com"
