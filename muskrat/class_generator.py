@@ -137,6 +137,7 @@ class PairedTypesGroup:
                 nxt.equalize_levels()
             elif not isinstance(this, PairedTypesGroup) and nxt.level > this.level:
                 del self.this_row[i + 1]
+                i -= 1
             i += 1
         return self
 
