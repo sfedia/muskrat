@@ -171,12 +171,10 @@ def between_paired_types(objects, left_border, right_border, include_borders=Tru
             if not inside_last:
                 between.appendleft(PairedTypesGroup())
                 inside_last = True
-                if include_borders:
-                    between[0].add_object(object_)
             else:
                 between[0].add_pgt()
-                if include_borders:
-                    between[0].add_object(object_)
+            if include_borders:
+                between[0].add_object(object_)
         elif left_border(object_):
             if include_borders:
                 between[0].add_object(object_)
